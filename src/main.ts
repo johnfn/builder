@@ -4,6 +4,8 @@ class G {
   static SCREEN_WIDTH:number = 800;
   static SCREEN_HEIGHT:number = 800;
 
+  static MAP_SIZE:number = 100;
+
   static game:Phaser.Game;
 }
 
@@ -35,8 +37,8 @@ class GameMap {
     this.normalizeGrid()
     this.quantizeGrid(4);
 
-    for (var i = 0; i < 20; i++) {
-      for (var j = 0; j < 20; j++) {
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
         var x:number = i * 32;
         var y:number = j * 32;
 
@@ -46,8 +48,8 @@ class GameMap {
   }
 
   quantizeGrid(options:number) {
-    for (var i = 0; i < 20; i++) {
-      for (var j = 0; j < 20; j++) {
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
         this.grid[i][j] = Math.floor(this.grid[i][j] * options);
       }
     }
@@ -57,8 +59,8 @@ class GameMap {
     var min:number = Number.POSITIVE_INFINITY;
     var max:number = Number.NEGATIVE_INFINITY;
 
-    for (var i = 0; i < 20; i++) {
-      for (var j = 0; j < 20; j++) {
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
         var val:number = this.grid[i][j];
 
         if (val > max) max = val;
@@ -66,8 +68,8 @@ class GameMap {
       }
     }
 
-    for (var i = 0; i < 20; i++) {
-      for (var j = 0; j < 20; j++) {
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
         this.grid[i][j] = (this.grid[i][j] - min) / max;
       }
     }
@@ -75,11 +77,11 @@ class GameMap {
 
   generateTerrain(smoothness:number) {
     var deltas:Point[] = [{x: 0, y: 1}, {x: 0, y: -1},{x: 1, y: 0},{x: -1, y: 0}]
-    var grid:number[][] = make2dArray(20, 1);
+    var grid:number[][] = make2dArray(G.MAP_SIZE, 1);
 
     for (var iteration = 0; iteration < smoothness; iteration++) {
-      for (var i = 0; i < 20; i++) {
-        for (var j = 0; j < 20; j++) {
+      for (var i = 0; i < G.MAP_SIZE; i++) {
+        for (var j = 0; j < G.MAP_SIZE; j++) {
           var neighborScores:number = 0;
           var neighbors:number = 0;
 
