@@ -32,8 +32,11 @@ function make2dArray(size:number, val:any) {
 
 class Minimap {
   graphics:Phaser.BitmapData;
+  map:GameMap;
 
-  public constructor() {
+  public constructor(map:GameMap) {
+    this.map = map;
+
     this.graphics = G.game.add.bitmapData(200, 200);
 
     this.graphics.setPixel(10, 10, 255, 0, 0, true);
@@ -43,6 +46,9 @@ class Minimap {
 }
 
 class GameMap {
+  public width:number;
+  public height:number;
+
   tiles:Phaser.Sprite[][];
   grid:number[][];
 
@@ -59,6 +65,13 @@ class GameMap {
         G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
       }
     }
+
+    this.width = G.MAP_SIZE;
+    this.height = G.MAP_SIZE;
+  }
+
+  public get(x:number, y:number):number {
+    return this.grid[x][y];
   }
 
   quantizeGrid(options:number) {
