@@ -39,9 +39,22 @@ class Minimap {
 
     this.graphics = G.game.add.bitmapData(200, 200);
 
-    this.graphics.setPixel(10, 10, 255, 0, 0, true);
+    this.fillInMinimap();
 
-    G.game.add.sprite(0, 0, this.graphics);
+    this.graphics.setPixel(0, 0, 255, 0, 0, true);
+
+    G.game.add.sprite(300, 300, this.graphics);
+  }
+
+  fillInMinimap() {
+    for (var i = 0; i < this.map.width; i++) {
+      for (var j = 0; j < this.map.height; j++) {
+        var val:number = this.map.get(i, j);
+        var color:number = val * 60;
+
+        this.graphics.setPixel(i, j, color, color, color);
+      }
+    }
   }
 }
 
@@ -148,7 +161,7 @@ class MainState extends Phaser.State {
 
   public create():void {
     this.map = new GameMap();
-    this.minimap = new Minimap();
+    this.minimap = new Minimap(this.map);
   }
 
   public update():void {
