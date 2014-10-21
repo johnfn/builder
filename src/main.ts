@@ -6,6 +6,8 @@ class G {
 
   static MAP_SIZE:number = 100;
 
+  static CAMERA_PAN_SPEED:number = 10;
+
   static game:Phaser.Game;
 }
 
@@ -105,7 +107,7 @@ class GameMap {
 
 class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
-  cursors:Phaser.CursorKeys;
+  cursors: Phaser.CursorKeys;
 
   public preload():void {
     //fw, fh, num frames,
@@ -123,15 +125,15 @@ class MainState extends Phaser.State {
 
   public update():void {
     if (this.cursors.up.isDown) {
-        this.game.camera.y -= 4;
+        this.game.camera.y -= G.CAMERA_PAN_SPEED;
     } else if (this.cursors.down.isDown) {
-        this.game.camera.y += 4;
+        this.game.camera.y += G.CAMERA_PAN_SPEED;
     }
 
     if (this.cursors.left.isDown) {
-        this.game.camera.x -= 4;
+        this.game.camera.x -= G.CAMERA_PAN_SPEED;
     } else if (this.cursors.right.isDown) {
-        this.game.camera.x += 4;
+        this.game.camera.x += G.CAMERA_PAN_SPEED;
     }
 
   }
