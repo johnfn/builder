@@ -47,8 +47,8 @@ class Minimap {
   }
 
   fillInMinimap() {
-    for (var i = 0; i < this.map.width; i++) {
-      for (var j = 0; j < this.map.height; j++) {
+    for (var i = 0; i < this.map.mapwidth; i++) {
+      for (var j = 0; j < this.map.mapheight; j++) {
         var val:number = this.map.get(i, j);
         var color:number = val * 60;
 
@@ -58,29 +58,53 @@ class Minimap {
   }
 }
 
-class GameMap {
-  public width:number;
-  public height:number;
+class GameMap extends Phaser.Group {
+  public mapwidth:number;
+  public mapheight:number;
 
   tiles:Phaser.Sprite[][];
   grid:number[][];
+
+  selectedTile:Phaser.Sprite;
 
   public constructor() {
     this.generateTerrain(5);
     this.normalizeGrid()
     this.quantizeGrid(4);
 
+    this.tiles = make2dArray(G.MAP_SIZE, undefined);
+
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         var x:number = i * 32;
         var y:number = j * 32;
 
-        G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
+        this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
       }
     }
 
-    this.width = G.MAP_SIZE;
-    this.height = G.MAP_SIZE;
+    this.mapwidth = G.MAP_SIZE;
+    this.mapheight = G.MAP_SIZE;
+
+    super(G.game);
+  }
+
+  public update() {
+    // mouse position, not relative to camera.
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
+
+    var tilex:number = Math.floor(mx / 32);
+    var tiley:number = Math.floor(my / 32);
+
+    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
+
+    if (tile != this.selectedTile) {
+      if (this.selectedTile) this.selectedTile.alpha = 1.0;
+
+      this.selectedTile = tile;
+      this.selectedTile.alpha = 0.5;
+    }
   }
 
   public get(x:number, y:number):number {
