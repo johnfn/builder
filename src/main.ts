@@ -134,7 +134,7 @@ class GameMap extends Phaser.Group {
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
-        this.grid[i][j] = (this.grid[i][j] - min) / max;
+        this.grid[i][j] = (this.grid[i][j] - min) / (max - min);
       }
     }
   }
