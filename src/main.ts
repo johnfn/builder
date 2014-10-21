@@ -161,7 +161,7 @@ class MainState extends Phaser.State {
 
   public create():void {
     this.map = new GameMap();
-    this.minimap = new Minimap(this.map);
+    // this.minimap = new Minimap(this.map);
   }
 
   public update():void {
