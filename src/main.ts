@@ -30,6 +30,18 @@ function make2dArray(size:number, val:any) {
   return result;
 }
 
+class Minimap {
+  graphics:Phaser.BitmapData;
+
+  public constructor() {
+    this.graphics = G.game.add.bitmapData(200, 200);
+
+    this.graphics.setPixel(10, 10, 255, 0, 0, true);
+
+    G.game.add.sprite(0, 0, this.graphics);
+  }
+}
+
 class GameMap {
   tiles:Phaser.Sprite[][];
   grid:number[][];
@@ -108,6 +120,8 @@ class GameMap {
 class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
   cursors: Phaser.CursorKeys;
+  map:GameMap;
+  minimap:Minimap;
 
   public preload():void {
     //fw, fh, num frames,
@@ -120,7 +134,8 @@ class MainState extends Phaser.State {
   }
 
   public create():void {
-    new GameMap();
+    this.map = new GameMap();
+    this.minimap = new Minimap();
   }
 
   public update():void {
