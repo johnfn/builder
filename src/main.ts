@@ -105,6 +105,7 @@ class GameMap {
 
 class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
+  cursors:Phaser.CursorKeys;
 
   public preload():void {
     //fw, fh, num frames,
@@ -112,7 +113,8 @@ class MainState extends Phaser.State {
   }
 
   public init():void {
-
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.game.world.setBounds(0, 0, G.MAP_SIZE * 32, G.MAP_SIZE * 32);
   }
 
   public create():void {
@@ -120,6 +122,17 @@ class MainState extends Phaser.State {
   }
 
   public update():void {
+    if (this.cursors.up.isDown) {
+        this.game.camera.y -= 4;
+    } else if (this.cursors.down.isDown) {
+        this.game.camera.y += 4;
+    }
+
+    if (this.cursors.left.isDown) {
+        this.game.camera.x -= 4;
+    } else if (this.cursors.right.isDown) {
+        this.game.camera.x += 4;
+    }
 
   }
 }
