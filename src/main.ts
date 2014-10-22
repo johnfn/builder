@@ -132,6 +132,8 @@ class GameMap extends Phaser.Group {
       var flood:Point[] = [];
       var neighbors:Point[] = [{x: x, y: y}];
 
+      hasBeenReached[x][y] = true;
+
       while (neighbors.length > 0) {
         var current:Point = neighbors.shift();
 
