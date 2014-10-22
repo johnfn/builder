@@ -159,10 +159,6 @@ class GameMap extends Phaser.Group {
         }
       }
 
-      for (var i = 0; i < flood.length; i++) {
-        hasBeenReached[flood[i].x][flood[i].y] = true;
-      }
-
       return flood;
     };
 
@@ -172,7 +168,13 @@ class GameMap extends Phaser.Group {
           continue;
         }
 
-        groups[this.get(i, j)].push(floodFill(i, j, this.get(i, j)));
+        var fill:Point[] = floodFill(i, j, this.get(i, j));
+
+        for (var k = 0; k < G.MAP_SIZE; k++) {
+          hasBeenReached[fill[k].x][fill[k].y] = true;
+        }
+
+        groups[this.get(i, j)].push(fill);
       }
     }
 
