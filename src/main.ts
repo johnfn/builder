@@ -153,7 +153,7 @@ class GameMap extends Phaser.Group {
 
           checked[next.x][next.y] = true;
 
-          if (self.grid[next.x][next.y] == type) {
+          if (self.get(next.x, next.y) == type) {
             neighbors.push(next);
           }
         }
@@ -172,7 +172,7 @@ class GameMap extends Phaser.Group {
           continue;
         }
 
-        groups[this.grid[i][j]].push(floodFill(i, j, this.grid[i][j]));
+        groups[this.get(i, j)].push(floodFill(i, j, this.get(i, j)));
       }
     }
 
