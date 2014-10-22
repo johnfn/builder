@@ -131,8 +131,9 @@ class GameMap extends Phaser.Group {
     var floodFill = function(x:number, y:number, type:number):Point[] {
       var flood:Point[] = [];
       var neighbors:Point[] = [{x: x, y: y}];
+      var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
 
-      hasBeenReached[x][y] = true;
+      checked[x][y] = true;
 
       while (neighbors.length > 0) {
         var current:Point = neighbors.shift();
@@ -146,16 +147,20 @@ class GameMap extends Phaser.Group {
             continue;
           }
 
-          if (hasBeenReached[next.x][next.y]) {
+          if (checked[next.x][next.y]) {
             continue;
           }
 
-          hasBeenReached[next.x][next.y] = true;
+          checked[next.x][next.y] = true;
 
           if (self.grid[next.x][next.y] == type) {
             neighbors.push(next);
           }
         }
+      }
+
+      for (var i = 0; i < flood.length; i++) {
+        hasBeenReached[flood[i].x][flood[i].y] = true;
       }
 
       return flood;
