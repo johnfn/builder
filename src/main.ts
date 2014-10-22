@@ -185,7 +185,12 @@ class GameMap extends Phaser.Group {
       largestGroups[i] = groups[i][maxIndex];
     }
 
-    console.log(largestGroups);
+    for (var i = 0; i < largestGroups.length; i++) {
+      for (var j = 0; j < largestGroups[i].length; j++) {
+        var p:Point = largestGroups[i][j];
+        this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+      }
+    }
   }
 
   public update() {
