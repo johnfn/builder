@@ -136,7 +136,6 @@ class GameMap extends Phaser.Group {
         var current:Point = neighbors.shift();
 
         flood.push(current);
-        hasBeenReached[current.x][current.y] = true;
 
         for (var i = 0; i < G.delta4.length; i++) {
           var next:Point = {x: current.x + G.delta4[i].x, y: current.y + G.delta4[i].y};
@@ -148,6 +147,8 @@ class GameMap extends Phaser.Group {
           if (hasBeenReached[next.x][next.y]) {
             continue;
           }
+
+          hasBeenReached[next.x][next.y] = true;
 
           if (self.grid[next.x][next.y] == type) {
             neighbors.push(next);
