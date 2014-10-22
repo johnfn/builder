@@ -125,7 +125,7 @@ class GameMap extends Phaser.Group {
 
   placeSpecialTerrain() {
     var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
-    var groups:{[key: number]: Point[]} = {0: [], 1: [], 2: [], 3: []};
+    var groups:{[key: number]: Point[][]} = {0: [], 1: [], 2: [], 3: []};
     var self:GameMap = this;
 
     var floodFill = function(x:number, y:number, type:number):Point[] {
@@ -140,6 +140,10 @@ class GameMap extends Phaser.Group {
 
         for (var i = 0; i < G.delta4.length; i++) {
           var next:Point = {x: current.x + G.delta4[i].x, y: current.y + G.delta4[i].y};
+
+          if (next.x < 0 || next.y < 0 || next.x >= G.MAP_SIZE || next.y >= G.MAP_SIZE) {
+            continue;
+          }
 
           if (hasBeenReached[next.x][next.y]) {
             continue;
@@ -160,10 +164,11 @@ class GameMap extends Phaser.Group {
           continue;
         }
 
-        groups[this.grid[i][j]] = floodFill(i, j, this.grid[i][j]);
+        groups[this.grid[i][j]].push(floodFill(i, j, this.grid[i][j]));
       }
     }
 
+    console.log(groups);
   }
 
   public update() {
