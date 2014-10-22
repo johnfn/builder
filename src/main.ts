@@ -63,16 +63,53 @@ class GameMap extends Phaser.Group {
   public mapheight:number;
 
   tiles:Phaser.Sprite[][];
+  special:Phaser.Sprite[][];
   grid:number[][];
 
   selectedTile:Phaser.Sprite;
 
   public constructor() {
-    this.generateTerrain(5);
+    this.tiles = make2dArray(G.MAP_SIZE, undefined);
+    this.special = make2dArray(G.MAP_SIZE, undefined);
+
+    while (!this.hasAllFourTiles()) {
+      this.placeTerrain();
+    }
+
+    this.placeSpecialTerrain();
+
+    this.mapwidth = G.MAP_SIZE;
+    this.mapheight = G.MAP_SIZE;
+
+    super(G.game);
+  }
+
+  hasAllFourTiles():boolean {
+    var hasTileType:boolean[] = [false, false, false, false];
+
+    if (!this.grid) {
+      return false;
+    }
+
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        hasTileType[this.grid[i][j]] = true;
+      }
+    }
+
+    for (var i = 0; i < 4; i++) {
+      if (!hasTileType[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  placeTerrain() {
+    this.generateTerrain(10);
     this.normalizeGrid()
     this.quantizeGrid(4);
-
-    this.tiles = make2dArray(G.MAP_SIZE, undefined);
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
@@ -82,11 +119,10 @@ class GameMap extends Phaser.Group {
         this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
       }
     }
+  }
 
-    this.mapwidth = G.MAP_SIZE;
-    this.mapheight = G.MAP_SIZE;
+  placeSpecialTerrain() {
 
-    super(G.game);
   }
 
   public update() {
@@ -164,7 +200,6 @@ class GameMap extends Phaser.Group {
 
     this.grid = grid;
   }
-
 }
 
 class MainState extends Phaser.State {
@@ -176,6 +211,7 @@ class MainState extends Phaser.State {
   public preload():void {
     //fw, fh, num frames,
     this.load.spritesheet("tiles", "assets/tiles.png", 32, 32);
+    this.load.spritesheet("special", "assets/special.png", 32, 32);
   }
 
   public init():void {
