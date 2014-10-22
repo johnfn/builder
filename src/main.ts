@@ -9,6 +9,8 @@ class G {
   static CAMERA_PAN_SPEED:number = 10;
 
   static game:Phaser.Game;
+  static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
+
 }
 
 interface Point {
@@ -16,7 +18,7 @@ interface Point {
   y: number
 }
 
-function make2dArray(size:number, val:any) {
+function make2dArray<T>(size:number, val:T):T[][] {
   var result = [];
 
   for (var i = 0; i < size; i++) {
@@ -122,6 +124,45 @@ class GameMap extends Phaser.Group {
   }
 
   placeSpecialTerrain() {
+    var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
+    var groups:{[key: number]: Point[]} = {0: [], 1: [], 2: [], 3: []};
+    var self:GameMap = this;
+
+    var floodFill = function(x:number, y:number, type:number):Point[] {
+      var flood:Point[] = [];
+      var neighbors:Point[] = [{x: x, y: y}];
+
+      while (neighbors.length > 0) {
+        var current:Point = neighbors.shift();
+
+        flood.push(current);
+        hasBeenReached[current.x][current.y] = true;
+
+        for (var i = 0; i < G.delta4.length; i++) {
+          var next:Point = {x: current.x + G.delta4[i].x, y: current.y + G.delta4[i].y};
+
+          if (hasBeenReached[next.x][next.y]) {
+            continue;
+          }
+
+          if (self.grid[next.x][next.y] == type) {
+            neighbors.push(next);
+          }
+        }
+      }
+
+      return flood;
+    };
+
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        if (hasBeenReached[i][j]) {
+          continue;
+        }
+
+        groups[this.grid[i][j]] = floodFill(i, j, this.grid[i][j]);
+      }
+    }
 
   }
 
@@ -176,7 +217,6 @@ class GameMap extends Phaser.Group {
   }
 
   generateTerrain(smoothness:number) {
-    var deltas:Point[] = [{x: 0, y: 1}, {x: 0, y: -1},{x: 1, y: 0},{x: -1, y: 0}]
     var grid:number[][] = make2dArray(G.MAP_SIZE, 1);
 
     for (var iteration = 0; iteration < smoothness; iteration++) {
@@ -185,9 +225,9 @@ class GameMap extends Phaser.Group {
           var neighborScores:number = 0;
           var neighbors:number = 0;
 
-          for (var k = 0; k < deltas.length; k++) {
-            var new_i:number = i + deltas[k].x;
-            var new_j:number = j + deltas[k].y;
+          for (var k = 0; k < G.delta4.length; k++) {
+            var new_i:number = i + G.delta4[k].x;
+            var new_j:number = j + G.delta4[k].y;
             if (new_i < 0 || new_i >= grid.length || new_j < 0 || new_j >= grid[0].length) continue;
             neighborScores += grid[new_i][new_j];
             neighbors++;
