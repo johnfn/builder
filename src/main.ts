@@ -236,7 +236,10 @@ class GameMap extends Phaser.Group {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         var val:number = this.grid[i][j];
 
-        if (val > max) max = val;
+        // We want the values of grid to start at 0 and go all the way up to, but not include, 1.
+        // So we add an infinitesmal amount to the max, so that when we normalize the result comes
+        // just under 1.
+        if (val > max) max = val + 0.0001;
         if (val < min) min = val;
       }
     }
