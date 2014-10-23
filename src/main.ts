@@ -94,13 +94,24 @@ class Minimap {
   }
 }
 
+enum TileType {
+  Dirt,
+  Grass,
+  Water,
+  DeepWater,
+  Ore,
+  Trees,
+  Marsh,
+  Fish
+}
+
 class GameMap extends Phaser.Group {
   public mapwidth:number;
   public mapheight:number;
 
   tiles:Phaser.Sprite[][];
   special:Phaser.Sprite[][];
-  grid:number[][];
+  grid:TileType[][];
 
   selectedTile:Phaser.Sprite;
 
@@ -193,7 +204,7 @@ class GameMap extends Phaser.Group {
     }
 
     for (var i = 0; i < largestGroups.length; i++) {
-      for (var j = 0; j < largestGroups[i].length; j++) {
+      for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
         this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
       }
