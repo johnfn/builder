@@ -10,7 +10,6 @@ class G {
 
   static game:Phaser.Game;
   static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
-
 }
 
 interface Point {
@@ -128,6 +127,7 @@ class GameMap extends Phaser.Group {
     var groups:Point[][][] = [[], [], [], []];
     var self:GameMap = this;
 
+    // TODO: Make general. Then, only flood fill like 50 steps for resources.
     var floodFill = function(x:number, y:number, type:number):Point[] {
       var flood:Point[] = [];
       var neighbors:Point[] = [{x: x, y: y}];
