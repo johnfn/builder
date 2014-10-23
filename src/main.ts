@@ -105,6 +105,14 @@ enum TileType {
   Fish
 }
 
+class Building {
+  sprite: Phaser.Sprite;
+
+  public constructor(type:number) {
+    this.sprite = G.game.add.sprite(0, 0, "buildings", type);
+  }
+}
+
 class GameMap extends Phaser.Group {
   public mapwidth:number;
   public mapheight:number;
@@ -112,6 +120,8 @@ class GameMap extends Phaser.Group {
   tiles:Phaser.Sprite[][];
   special:Phaser.Sprite[][];
   grid:TileType[][];
+
+  buildings: Building[];
 
   selectedTile:Phaser.Sprite;
 
@@ -227,6 +237,8 @@ class GameMap extends Phaser.Group {
       this.selectedTile = tile;
       this.selectedTile.alpha = 0.5;
     }
+
+    console.log(G.game.input.keyboard.isDown(49)); // 1
   }
 
   public get(x:number, y:number):number {
@@ -300,6 +312,7 @@ class MainState extends Phaser.State {
     //fw, fh, num frames,
     this.load.spritesheet("tiles", "assets/tiles.png", 32, 32);
     this.load.spritesheet("special", "assets/special.png", 32, 32);
+    this.load.spritesheet("buildings", "assets/buildings.png", 32, 32);
   }
 
   public init():void {
