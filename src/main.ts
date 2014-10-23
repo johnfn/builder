@@ -17,6 +17,41 @@ interface Point {
   y: number
 }
 
+// TODO: Make general. Then, only flood fill like 50 steps for resources.
+var floodFill = function(x:number, y:number, type:number, grid:number[][]):Point[] {
+  var flood:Point[] = [];
+  var neighbors:Point[] = [{x: x, y: y}];
+  var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
+
+  checked[x][y] = true;
+
+  while (neighbors.length > 0) {
+    var current:Point = neighbors.shift();
+
+    flood.push(current);
+
+    for (var i = 0; i < G.delta4.length; i++) {
+      var next:Point = {x: current.x + G.delta4[i].x, y: current.y + G.delta4[i].y};
+
+      if (next.x < 0 || next.y < 0 || next.x >= G.MAP_SIZE || next.y >= G.MAP_SIZE) {
+        continue;
+      }
+
+      if (checked[next.x][next.y]) {
+        continue;
+      }
+
+      checked[next.x][next.y] = true;
+
+      if (grid[next.x][next.y] == type) {
+        neighbors.push(next);
+      }
+    }
+  }
+
+  return flood;
+};
+
 function make2dArray<T>(size:number, val:T):T[][] {
   var result = [];
 
@@ -127,50 +162,15 @@ class GameMap extends Phaser.Group {
     var groups:Point[][][] = [[], [], [], []];
     var self:GameMap = this;
 
-    // TODO: Make general. Then, only flood fill like 50 steps for resources.
-    var floodFill = function(x:number, y:number, type:number):Point[] {
-      var flood:Point[] = [];
-      var neighbors:Point[] = [{x: x, y: y}];
-      var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
-
-      checked[x][y] = true;
-
-      while (neighbors.length > 0) {
-        var current:Point = neighbors.shift();
-
-        flood.push(current);
-
-        for (var i = 0; i < G.delta4.length; i++) {
-          var next:Point = {x: current.x + G.delta4[i].x, y: current.y + G.delta4[i].y};
-
-          if (next.x < 0 || next.y < 0 || next.x >= G.MAP_SIZE || next.y >= G.MAP_SIZE) {
-            continue;
-          }
-
-          if (checked[next.x][next.y]) {
-            continue;
-          }
-
-          checked[next.x][next.y] = true;
-
-          if (self.get(next.x, next.y) == type) {
-            neighbors.push(next);
-          }
-        }
-      }
-
-      return flood;
-    };
-
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         if (hasBeenReached[i][j]) {
           continue;
         }
 
-        var fill:Point[] = floodFill(i, j, this.get(i, j));
+        var fill:Point[] = floodFill(i, j, this.get(i, j), this.grid);
 
-        for (var k = 0; k < G.MAP_SIZE; k++) {
+        for (var k = 0; k < fill.length; k++) {
           hasBeenReached[fill[k].x][fill[k].y] = true;
         }
 
