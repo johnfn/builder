@@ -123,6 +123,7 @@ class GameMap extends Phaser.Group {
 
   buildings: Building[];
 
+  mousedOverTile:Phaser.Sprite;
   selectedTile:Phaser.Sprite;
 
   public constructor() {
@@ -231,11 +232,22 @@ class GameMap extends Phaser.Group {
 
     var tile:Phaser.Sprite = this.tiles[tilex][tiley];
 
-    if (tile != this.selectedTile) {
-      if (this.selectedTile) this.selectedTile.alpha = 1.0;
+    if (tile != this.mousedOverTile) {
+      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
 
-      this.selectedTile = tile;
-      this.selectedTile.alpha = 0.5;
+      this.mousedOverTile = tile;
+      this.mousedOverTile.alpha = 0.5;
+    }
+
+    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
+      console.log("clack");
+
+      if (tile != this.selectedTile) {
+        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
+
+        this.selectedTile = tile;
+        this.selectedTile.alpha = 0.5;
+      }
     }
 
     console.log(G.game.input.keyboard.isDown(49)); // 1
