@@ -325,25 +325,17 @@ class Resources extends Grid {
   }
 }
 
-class LayerList {
-  layers:Grid[];
-}
-
 class GameMap extends Phaser.Group {
-  public mapwidth:number;
-  public mapheight:number;
+  layers:Grid[];
 
   buildings: Building[];
 
-  terrain:Terrain; //TODO - move to layer
-  resources:Resources;
-
   public constructor() {
-    this.terrain = new Terrain();
-    this.resources = new Resources(this.terrain);
+    var terrain:Terrain = new Terrain();
+    var resources:Resources = new Resources(terrain);
 
-    this.mapwidth = G.MAP_SIZE;
-    this.mapheight = G.MAP_SIZE;
+    this.layers.push(terrain);
+    this.layers.push(resources);
 
     super(G.game);
   }
