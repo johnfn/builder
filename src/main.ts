@@ -18,7 +18,7 @@ interface Point {
 }
 
 // TODO: Make general. Then, only flood fill like 50 steps for resources.
-var floodFill = function(x:number, y:number, type:number, grid:number[][]):Point[] {
+var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -43,7 +43,7 @@ var floodFill = function(x:number, y:number, type:number, grid:number[][]):Point
 
       checked[next.x][next.y] = true;
 
-      if (grid[next.x][next.y] == type) {
+      if (grid.get(next.x, next.y) == type) {
         neighbors.push(next);
       }
     }
@@ -67,6 +67,7 @@ function make2dArray<T>(size:number, val:T):T[][] {
 }
 
 class Minimap {
+  // too slow
   graphics:Phaser.BitmapData;
   map:GameMap;
 
@@ -274,41 +275,14 @@ class Resources extends Grid {
     super();
 
     this.terrain = terrain;
+
+    this.placeResources();
   }
 
-}
-
-class LayerList {
-  layers:Grid[];
-}
-
-class GameMap extends Phaser.Group {
-  public mapwidth:number;
-  public mapheight:number;
-
-  special:Phaser.Sprite[][];
-
-  buildings: Building[];
-
-  terrain:Terrain; //TODO - move to layer
-
-  public constructor() {
-    this.terrain = new Terrain();
-
-    this.special = make2dArray(G.MAP_SIZE, undefined);
-
-    this.placeSpecialTerrain();
-
-    this.mapwidth = G.MAP_SIZE;
-    this.mapheight = G.MAP_SIZE;
-
-    super(G.game);
-  }
-
-  placeSpecialTerrain() {
+  placeResources() {
     var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
     var groups:Point[][][] = [[], [], [], []];
-    var self:GameMap = this;
+    var self:Resources = this;
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
@@ -316,13 +290,13 @@ class GameMap extends Phaser.Group {
           continue;
         }
 
-        var fill:Point[] = floodFill(i, j, this.get(i, j), this.grid);
+        var fill:Point[] = floodFill(i, j, this.terrain.get(i, j), this.terrain);
 
         for (var k = 0; k < fill.length; k++) {
           hasBeenReached[fill[k].x][fill[k].y] = true;
         }
 
-        groups[this.get(i, j)].push(fill);
+        groups[this.terrain.get(i, j)].push(fill);
       }
     }
 
@@ -340,20 +314,42 @@ class GameMap extends Phaser.Group {
       largestGroups[i] = groups[i][maxIndex];
     }
 
+    console.log(largestGroups);
+
     for (var i = 0; i < largestGroups.length; i++) {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
-        this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+        this.tiles[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
       }
     }
+  }
+}
+
+class LayerList {
+  layers:Grid[];
+}
+
+class GameMap extends Phaser.Group {
+  public mapwidth:number;
+  public mapheight:number;
+
+  buildings: Building[];
+
+  terrain:Terrain; //TODO - move to layer
+  resources:Resources;
+
+  public constructor() {
+    this.terrain = new Terrain();
+    this.resources = new Resources(this.terrain);
+
+    this.mapwidth = G.MAP_SIZE;
+    this.mapheight = G.MAP_SIZE;
+
+    super(G.game);
   }
 
   public update() {
     console.log(G.game.input.keyboard.isDown(49)); // 1
-  }
-
-  mouseDown() {
-
   }
 }
 
