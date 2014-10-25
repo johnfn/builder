@@ -123,9 +123,16 @@ class Grid extends Phaser.Group {
 
     super(G.game);
   }
+
+  public get(x:number, y:number):number {
+    return this.grid[x][y];
+  }
 }
 
 class Terrain extends Grid {
+  mousedOverTile:Phaser.Sprite;
+  selectedTile:Phaser.Sprite;
+
   public constructor() {
     super();
 
@@ -137,6 +144,13 @@ class Terrain extends Grid {
   }
 
   public update() {
+    // mouse position, not relative to camera.
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
+
+    var tilex:number = Math.floor(mx / 32);
+    var tiley:number = Math.floor(my / 32);
+
     var tile:Phaser.Sprite = this.tiles[tilex][tiley];
 
     if (tile != this.mousedOverTile) {
@@ -157,6 +171,10 @@ class Terrain extends Grid {
       console.log(G.game.input.keyboard.lastKey.keyCode);
       this.mouseDown();
     }
+  }
+
+  mouseDown() {
+    console.log("ding");
   }
 
   hasAllFourTiles():boolean {
@@ -250,6 +268,13 @@ class Terrain extends Grid {
 }
 
 class Resources extends Grid {
+  terrain:Terrain;
+
+  public constructor(terrain:Terrain) {
+    super();
+
+    this.terrain = terrain;
+  }
 
 }
 
@@ -265,10 +290,11 @@ class GameMap extends Phaser.Group {
 
   buildings: Building[];
 
-  mousedOverTile:Phaser.Sprite;
-  selectedTile:Phaser.Sprite;
+  terrain:Terrain; //TODO - move to layer
 
   public constructor() {
+    this.terrain = new Terrain();
+
     this.special = make2dArray(G.MAP_SIZE, undefined);
 
     this.placeSpecialTerrain();
@@ -323,25 +349,12 @@ class GameMap extends Phaser.Group {
   }
 
   public update() {
-    // mouse position, not relative to camera.
-    var mx = G.game.input.worldX;
-    var my = G.game.input.worldY;
-
-    var tilex:number = Math.floor(mx / 32);
-    var tiley:number = Math.floor(my / 32);
-
-
     console.log(G.game.input.keyboard.isDown(49)); // 1
   }
 
   mouseDown() {
 
   }
-
-  public get(x:number, y:number):number {
-    return this.grid[x][y];
-  }
-
 }
 
 class MainState extends Phaser.State {
