@@ -66,6 +66,7 @@ function make2dArray<T>(size:number, val:T):T[][] {
   return result;
 }
 
+/*
 class Minimap {
   // too slow
   graphics:Phaser.BitmapData;
@@ -94,6 +95,7 @@ class Minimap {
     }
   }
 }
+*/
 
 enum TileType {
   Dirt,
@@ -334,6 +336,8 @@ class GameMap extends Phaser.Group {
     var terrain:Terrain = new Terrain();
     var resources:Resources = new Resources(terrain);
 
+    this.layers = [];
+
     this.layers.push(terrain);
     this.layers.push(resources);
 
@@ -350,6 +354,7 @@ class MainState extends Phaser.State {
   cursors: Phaser.CursorKeys;
   map:GameMap;
   minimap:Minimap;
+  shift:Phaser.Key;
 
   public preload():void {
     //fw, fh, num frames,
@@ -365,22 +370,32 @@ class MainState extends Phaser.State {
 
   public create():void {
     this.map = new GameMap();
+
+    this.shift = G.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+
     // this.minimap = new Minimap(this.map);
   }
 
   public update():void {
+    var mod:number = 1;
+
+    if (this.shift.isDown) {
+      mod = 4;
+    }
+
+    // G.game.input.keyboard.isDown("keycode: number")
+
     if (this.cursors.up.isDown) {
-        this.game.camera.y -= G.CAMERA_PAN_SPEED;
+      this.game.camera.y -= G.CAMERA_PAN_SPEED * mod;
     } else if (this.cursors.down.isDown) {
-        this.game.camera.y += G.CAMERA_PAN_SPEED;
+      this.game.camera.y += G.CAMERA_PAN_SPEED * mod;
     }
 
     if (this.cursors.left.isDown) {
-        this.game.camera.x -= G.CAMERA_PAN_SPEED;
+      this.game.camera.x -= G.CAMERA_PAN_SPEED * mod;
     } else if (this.cursors.right.isDown) {
-        this.game.camera.x += G.CAMERA_PAN_SPEED;
+      this.game.camera.x += G.CAMERA_PAN_SPEED * mod;
     }
-
   }
 }
 
