@@ -18,7 +18,7 @@ interface Point {
 }
 
 // TODO: Make general. Then, only flood fill like 50 steps for resources.
-var floodFill = function(x:number, y:number, type:number, grid:number[][]):Point[] {
+var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -43,7 +43,7 @@ var floodFill = function(x:number, y:number, type:number, grid:number[][]):Point
 
       checked[next.x][next.y] = true;
 
-      if (grid[next.x][next.y] == type) {
+      if (grid.get(next.x, next.y) == type) {
         neighbors.push(next);
       }
     }
@@ -67,6 +67,7 @@ function make2dArray<T>(size:number, val:T):T[][] {
 }
 
 class Minimap {
+  // too slow
   graphics:Phaser.BitmapData;
   map:GameMap;
 
@@ -113,41 +114,72 @@ class Building {
   }
 }
 
-class GameMap extends Phaser.Group {
-  public mapwidth:number;
-  public mapheight:number;
-
-  tiles:Phaser.Sprite[][];
-  special:Phaser.Sprite[][];
-  grid:TileType[][];
-
-  buildings: Building[];
-
-  mousedOverTile:Phaser.Sprite;
-  selectedTile:Phaser.Sprite;
+class Grid extends Phaser.Group {
+  grid:number[][];
+  tiles: Phaser.Sprite[][];
 
   public constructor() {
+    this.grid = make2dArray(G.MAP_SIZE, 0);
     this.tiles = make2dArray(G.MAP_SIZE, undefined);
-    this.special = make2dArray(G.MAP_SIZE, undefined);
-
-    while (!this.hasAllFourTiles()) {
-      this.placeTerrain();
-    }
-
-    this.placeSpecialTerrain();
-
-    this.mapwidth = G.MAP_SIZE;
-    this.mapheight = G.MAP_SIZE;
 
     super(G.game);
   }
 
+  public get(x:number, y:number):number {
+    return this.grid[x][y];
+  }
+}
+
+class Terrain extends Grid {
+  mousedOverTile:Phaser.Sprite;
+  selectedTile:Phaser.Sprite;
+
+  public constructor() {
+    super();
+
+    this.placeTerrain();
+
+    while (!this.hasAllFourTiles()) {
+      this.placeTerrain();
+    }
+  }
+
+  public update() {
+    // mouse position, not relative to camera.
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
+
+    var tilex:number = Math.floor(mx / 32);
+    var tiley:number = Math.floor(my / 32);
+
+    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
+
+    if (tile != this.mousedOverTile) {
+      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
+
+      this.mousedOverTile = tile;
+      this.mousedOverTile.alpha = 0.5;
+    }
+
+    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
+      if (tile != this.selectedTile) {
+        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
+
+        this.selectedTile = tile;
+        this.selectedTile.alpha = 0.5;
+      }
+
+      console.log(G.game.input.keyboard.lastKey.keyCode);
+      this.mouseDown();
+    }
+  }
+
+  mouseDown() {
+    console.log("ding");
+  }
+
   hasAllFourTiles():boolean {
     var hasTileType:boolean[] = [false, false, false, false];
-
-    if (!this.grid) {
-      return false;
-    }
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
@@ -177,84 +209,6 @@ class GameMap extends Phaser.Group {
         this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
       }
     }
-  }
-
-  placeSpecialTerrain() {
-    var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
-    var groups:Point[][][] = [[], [], [], []];
-    var self:GameMap = this;
-
-    for (var i = 0; i < G.MAP_SIZE; i++) {
-      for (var j = 0; j < G.MAP_SIZE; j++) {
-        if (hasBeenReached[i][j]) {
-          continue;
-        }
-
-        var fill:Point[] = floodFill(i, j, this.get(i, j), this.grid);
-
-        for (var k = 0; k < fill.length; k++) {
-          hasBeenReached[fill[k].x][fill[k].y] = true;
-        }
-
-        groups[this.get(i, j)].push(fill);
-      }
-    }
-
-    var largestGroups:Point[][] = [];
-
-    for (var i = 0; i < 4; i++) {
-      var maxIndex:number = 0;
-
-      for (var j = 0; j < groups[i].length; j++) {
-        if (groups[i][j].length > groups[i][maxIndex].length) {
-          maxIndex = j;
-        }
-      }
-
-      largestGroups[i] = groups[i][maxIndex];
-    }
-
-    for (var i = 0; i < largestGroups.length; i++) {
-      for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
-        var p:Point = largestGroups[i][j];
-        this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
-      }
-    }
-  }
-
-  public update() {
-    // mouse position, not relative to camera.
-    var mx = G.game.input.worldX;
-    var my = G.game.input.worldY;
-
-    var tilex:number = Math.floor(mx / 32);
-    var tiley:number = Math.floor(my / 32);
-
-    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
-
-    if (tile != this.mousedOverTile) {
-      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
-
-      this.mousedOverTile = tile;
-      this.mousedOverTile.alpha = 0.5;
-    }
-
-    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
-      console.log("clack");
-
-      if (tile != this.selectedTile) {
-        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
-
-        this.selectedTile = tile;
-        this.selectedTile.alpha = 0.5;
-      }
-    }
-
-    console.log(G.game.input.keyboard.isDown(49)); // 1
-  }
-
-  public get(x:number, y:number):number {
-    return this.grid[x][y];
   }
 
   quantizeGrid(options:number) {
@@ -311,6 +265,83 @@ class GameMap extends Phaser.Group {
     }
 
     this.grid = grid;
+  }
+}
+
+class Resources extends Grid {
+  terrain:Terrain;
+
+  public constructor(terrain:Terrain) {
+    super();
+
+    this.terrain = terrain;
+
+    this.placeResources();
+  }
+
+  placeResources() {
+    var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
+    var groups:Point[][][] = [[], [], [], []];
+    var self:Resources = this;
+
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        if (hasBeenReached[i][j]) {
+          continue;
+        }
+
+        var fill:Point[] = floodFill(i, j, this.terrain.get(i, j), this.terrain);
+
+        for (var k = 0; k < fill.length; k++) {
+          hasBeenReached[fill[k].x][fill[k].y] = true;
+        }
+
+        groups[this.terrain.get(i, j)].push(fill);
+      }
+    }
+
+    var largestGroups:Point[][] = [];
+
+    for (var i = 0; i < 4; i++) {
+      var maxIndex:number = 0;
+
+      for (var j = 0; j < groups[i].length; j++) {
+        if (groups[i][j].length > groups[i][maxIndex].length) {
+          maxIndex = j;
+        }
+      }
+
+      largestGroups[i] = groups[i][maxIndex];
+    }
+
+    console.log(largestGroups);
+
+    for (var i = 0; i < largestGroups.length; i++) {
+      for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
+        var p:Point = largestGroups[i][j];
+        this.tiles[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+      }
+    }
+  }
+}
+
+class GameMap extends Phaser.Group {
+  layers:Grid[];
+
+  buildings: Building[];
+
+  public constructor() {
+    var terrain:Terrain = new Terrain();
+    var resources:Resources = new Resources(terrain);
+
+    this.layers.push(terrain);
+    this.layers.push(resources);
+
+    super(G.game);
+  }
+
+  public update() {
+    console.log(G.game.input.keyboard.isDown(49)); // 1
   }
 }
 
