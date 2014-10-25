@@ -113,41 +113,54 @@ class Building {
   }
 }
 
-class GameMap extends Phaser.Group {
-  public mapwidth:number;
-  public mapheight:number;
-
-  tiles:Phaser.Sprite[][];
-  special:Phaser.Sprite[][];
-  grid:TileType[][];
-
-  buildings: Building[];
-
-  mousedOverTile:Phaser.Sprite;
-  selectedTile:Phaser.Sprite;
+class Grid extends Phaser.Group {
+  grid:number[][];
+  tiles: Phaser.Sprite[][];
 
   public constructor() {
+    this.grid = make2dArray(G.MAP_SIZE, 0);
     this.tiles = make2dArray(G.MAP_SIZE, undefined);
-    this.special = make2dArray(G.MAP_SIZE, undefined);
+
+    super(G.game);
+  }
+}
+
+class Terrain extends Grid {
+  public constructor() {
+    super();
+
+    this.placeTerrain();
 
     while (!this.hasAllFourTiles()) {
       this.placeTerrain();
     }
+  }
 
-    this.placeSpecialTerrain();
+  public update() {
+    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
 
-    this.mapwidth = G.MAP_SIZE;
-    this.mapheight = G.MAP_SIZE;
+    if (tile != this.mousedOverTile) {
+      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
 
-    super(G.game);
+      this.mousedOverTile = tile;
+      this.mousedOverTile.alpha = 0.5;
+    }
+
+    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
+      if (tile != this.selectedTile) {
+        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
+
+        this.selectedTile = tile;
+        this.selectedTile.alpha = 0.5;
+      }
+
+      console.log(G.game.input.keyboard.lastKey.keyCode);
+      this.mouseDown();
+    }
   }
 
   hasAllFourTiles():boolean {
     var hasTileType:boolean[] = [false, false, false, false];
-
-    if (!this.grid) {
-      return false;
-    }
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
@@ -177,84 +190,6 @@ class GameMap extends Phaser.Group {
         this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
       }
     }
-  }
-
-  placeSpecialTerrain() {
-    var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
-    var groups:Point[][][] = [[], [], [], []];
-    var self:GameMap = this;
-
-    for (var i = 0; i < G.MAP_SIZE; i++) {
-      for (var j = 0; j < G.MAP_SIZE; j++) {
-        if (hasBeenReached[i][j]) {
-          continue;
-        }
-
-        var fill:Point[] = floodFill(i, j, this.get(i, j), this.grid);
-
-        for (var k = 0; k < fill.length; k++) {
-          hasBeenReached[fill[k].x][fill[k].y] = true;
-        }
-
-        groups[this.get(i, j)].push(fill);
-      }
-    }
-
-    var largestGroups:Point[][] = [];
-
-    for (var i = 0; i < 4; i++) {
-      var maxIndex:number = 0;
-
-      for (var j = 0; j < groups[i].length; j++) {
-        if (groups[i][j].length > groups[i][maxIndex].length) {
-          maxIndex = j;
-        }
-      }
-
-      largestGroups[i] = groups[i][maxIndex];
-    }
-
-    for (var i = 0; i < largestGroups.length; i++) {
-      for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
-        var p:Point = largestGroups[i][j];
-        this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
-      }
-    }
-  }
-
-  public update() {
-    // mouse position, not relative to camera.
-    var mx = G.game.input.worldX;
-    var my = G.game.input.worldY;
-
-    var tilex:number = Math.floor(mx / 32);
-    var tiley:number = Math.floor(my / 32);
-
-    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
-
-    if (tile != this.mousedOverTile) {
-      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
-
-      this.mousedOverTile = tile;
-      this.mousedOverTile.alpha = 0.5;
-    }
-
-    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
-      console.log("clack");
-
-      if (tile != this.selectedTile) {
-        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
-
-        this.selectedTile = tile;
-        this.selectedTile.alpha = 0.5;
-      }
-    }
-
-    console.log(G.game.input.keyboard.isDown(49)); // 1
-  }
-
-  public get(x:number, y:number):number {
-    return this.grid[x][y];
   }
 
   quantizeGrid(options:number) {
@@ -312,6 +247,101 @@ class GameMap extends Phaser.Group {
 
     this.grid = grid;
   }
+}
+
+class Resources extends Grid {
+
+}
+
+class LayerList {
+  layers:Grid[];
+}
+
+class GameMap extends Phaser.Group {
+  public mapwidth:number;
+  public mapheight:number;
+
+  special:Phaser.Sprite[][];
+
+  buildings: Building[];
+
+  mousedOverTile:Phaser.Sprite;
+  selectedTile:Phaser.Sprite;
+
+  public constructor() {
+    this.special = make2dArray(G.MAP_SIZE, undefined);
+
+    this.placeSpecialTerrain();
+
+    this.mapwidth = G.MAP_SIZE;
+    this.mapheight = G.MAP_SIZE;
+
+    super(G.game);
+  }
+
+  placeSpecialTerrain() {
+    var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
+    var groups:Point[][][] = [[], [], [], []];
+    var self:GameMap = this;
+
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        if (hasBeenReached[i][j]) {
+          continue;
+        }
+
+        var fill:Point[] = floodFill(i, j, this.get(i, j), this.grid);
+
+        for (var k = 0; k < fill.length; k++) {
+          hasBeenReached[fill[k].x][fill[k].y] = true;
+        }
+
+        groups[this.get(i, j)].push(fill);
+      }
+    }
+
+    var largestGroups:Point[][] = [];
+
+    for (var i = 0; i < 4; i++) {
+      var maxIndex:number = 0;
+
+      for (var j = 0; j < groups[i].length; j++) {
+        if (groups[i][j].length > groups[i][maxIndex].length) {
+          maxIndex = j;
+        }
+      }
+
+      largestGroups[i] = groups[i][maxIndex];
+    }
+
+    for (var i = 0; i < largestGroups.length; i++) {
+      for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
+        var p:Point = largestGroups[i][j];
+        this.special[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+      }
+    }
+  }
+
+  public update() {
+    // mouse position, not relative to camera.
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
+
+    var tilex:number = Math.floor(mx / 32);
+    var tiley:number = Math.floor(my / 32);
+
+
+    console.log(G.game.input.keyboard.isDown(49)); // 1
+  }
+
+  mouseDown() {
+
+  }
+
+  public get(x:number, y:number):number {
+    return this.grid[x][y];
+  }
+
 }
 
 class MainState extends Phaser.State {
