@@ -170,14 +170,7 @@ class Terrain extends Grid {
         this.selectedTile = tile;
         this.selectedTile.alpha = 0.5;
       }
-
-      console.log(G.game.input.keyboard.lastKey.keyCode);
-      this.mouseDown();
     }
-  }
-
-  mouseDown() {
-    console.log("ding");
   }
 
   hasAllFourTiles():boolean {
@@ -315,8 +308,6 @@ class Resources extends Grid {
 
       largestGroups[i] = groups[i][maxIndex];
     }
-
-    console.log(largestGroups);
 
     for (var i = 0; i < largestGroups.length; i++) {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {

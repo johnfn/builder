@@ -5,7 +5,7 @@
 
 
    ☐ Make repo private...
-   ☐ Need some sort of grid abstraction for different layers.
+   ✔ Need some sort of grid abstraction for different layers. @done (14-10-25 16:03)
    ☐ Add land bridges - MST, find closest shorelines, blah. (Except how do you do a MST of land masses...)
    ☐ Animals ?
    ☐ Choose buildings to build. 1, 2, 3, 4.
