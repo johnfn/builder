@@ -17,7 +17,7 @@ interface Point {
   y: number
 }
 
-var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
+var floodFill = function(x:number, y:number, type:string, grid:Grid):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -42,7 +42,7 @@ var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
 
       checked[next.x][next.y] = true;
 
-      if (grid.get(next.x, next.y) == type) {
+      if (grid.get(next.x, next.y).tileName == type) {
         neighbors.push(next);
       }
     }
@@ -116,15 +116,14 @@ class Tile {
 
 class TerrainTile extends Tile {
   value:number = 0;
-  names:{[key: number]: string} = {
-    0: "dirt",
-    1: "grass",
-    2: "sand",
-    3: "water"
-  }
 
   constructor(value:number) {
-    super(this.names[value], []);
+    super({
+      0: "dirt",
+      1: "grass",
+      2: "sand",
+      3: "water"
+    }[value], []);
   }
 }
 
@@ -159,7 +158,6 @@ class Terrain extends Grid {
   public constructor() {
     super();
 
-    // TODO: This needs to return values, not implicitly set grid.
     var data:number[][] = this.placeTerrain();
 
     while (!this.hasAllFourTiles(data)) {
@@ -174,6 +172,7 @@ class Terrain extends Grid {
     }
   }
 
+  // TODO:: This crap should not be inside Terrain.
   public update() {
     // mouse position, not relative to camera.
     var mx = G.game.input.worldX;
@@ -201,12 +200,12 @@ class Terrain extends Grid {
     }
   }
 
-  hasAllFourTiles():boolean {
+  hasAllFourTiles(data:number[][]):boolean {
     var hasTileType:boolean[] = [false, false, false, false];
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
-        hasTileType[this.grid[i][j]] = true;
+        hasTileType[data[i][j]] = true;
       }
     }
 
@@ -219,36 +218,44 @@ class Terrain extends Grid {
     return true;
   }
 
-  placeTerrain() {
-    this.generateTerrain(10);
-    this.normalizeGrid()
-    this.quantizeGrid(4);
+  placeTerrain():number[][] {
+    var data:number[][] = this.generateTerrain(10);
+    data = this.normalizeGrid(data);
+    data = this.quantizeGrid(data, 4);
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         var x:number = i * 32;
         var y:number = j * 32;
 
-        this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", this.grid[i][j]);
+        this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", data[i][j]);
       }
     }
+
+    return data;
   }
 
-  quantizeGrid(options:number) {
+  quantizeGrid(data:number[][], options:number):number[][] {
+    var result:number[][] = make2dArray(data.length, 0);
+
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
-        this.grid[i][j] = Math.floor(this.grid[i][j] * options);
+        result[i][j] = Math.floor(data[i][j] * options);
       }
     }
+
+    return result;
   }
 
-  normalizeGrid() {
+  normalizeGrid(data:number[][]):number[][] {
+    var result:number[][] = make2dArray(data.length, 0);
+
     var min:number = Number.POSITIVE_INFINITY;
     var max:number = Number.NEGATIVE_INFINITY;
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
-        var val:number = this.grid[i][j];
+        var val:number = data[i][j];
 
         // We want the values of grid to start at 0 and go all the way up to, but not include, 1.
         // So we add an infinitesmal amount to the max, so that when we normalize the result comes
@@ -260,12 +267,14 @@ class Terrain extends Grid {
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
-        this.grid[i][j] = (this.grid[i][j] - min) / (max - min);
+        result[i][j] = (data[i][j] - min) / (max - min);
       }
     }
+
+    return result;
   }
 
-  generateTerrain(smoothness:number) {
+  generateTerrain(smoothness:number):number[][] {
     var grid:number[][] = make2dArray(G.MAP_SIZE, 1);
 
     for (var iteration = 0; iteration < smoothness; iteration++) {
@@ -287,7 +296,7 @@ class Terrain extends Grid {
       }
     }
 
-    this.grid = grid;
+    return grid;
   }
 }
 
@@ -304,7 +313,7 @@ class Resources extends Grid {
 
   placeResources() {
     var hasBeenReached:boolean[][] = make2dArray(G.MAP_SIZE, false);
-    var groups:Point[][][] = [[], [], [], []];
+    var groups:{[key: string]: Point[][]} = {};
     var self:Resources = this;
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
@@ -313,13 +322,18 @@ class Resources extends Grid {
           continue;
         }
 
-        var fill:Point[] = floodFill(i, j, this.terrain.get(i, j), this.terrain);
+        var tileName = this.terrain.get(i, j).tileName;
+        var fill:Point[] = floodFill(i, j, tileName, this.terrain);
 
         for (var k = 0; k < fill.length; k++) {
           hasBeenReached[fill[k].x][fill[k].y] = true;
         }
 
-        groups[this.terrain.get(i, j)].push(fill);
+        if (!(tileName in groups)) {
+          groups[tileName] = [];
+        }
+
+        groups[tileName].push(fill);
       }
     }
 
