@@ -96,15 +96,22 @@ class Minimap {
 }
 */
 
-enum TileType {
-  Dirt,
-  Grass,
-  Water,
-  DeepWater,
-  Ore,
-  Trees,
-  Marsh,
-  Fish
+class Tile {
+  tileName:string;
+  actions:string[];
+
+  constructor(tileName:string, actions:string[]) {
+    this.tileName = tileName;
+    this.actions = actions;
+  }
+
+  gettileName():string {
+    return this.tileName;
+  }
+
+  getActions():string[] {
+    return this.actions;
+  }
 }
 
 class Building {
@@ -366,24 +373,24 @@ class MainState extends Phaser.State {
   }
 
   public update():void {
-    var mod:number = 1;
+    var speedMod:number = 1;
 
     if (this.shift.isDown) {
-      mod = 4;
+      speedMod = 4;
     }
 
     // G.game.input.keyboard.isDown("keycode: number")
 
     if (this.cursors.up.isDown) {
-      this.game.camera.y -= G.CAMERA_PAN_SPEED * mod;
+      this.game.camera.y -= G.CAMERA_PAN_SPEED * speedMod;
     } else if (this.cursors.down.isDown) {
-      this.game.camera.y += G.CAMERA_PAN_SPEED * mod;
+      this.game.camera.y += G.CAMERA_PAN_SPEED * speedMod;
     }
 
     if (this.cursors.left.isDown) {
-      this.game.camera.x -= G.CAMERA_PAN_SPEED * mod;
+      this.game.camera.x -= G.CAMERA_PAN_SPEED * speedMod;
     } else if (this.cursors.right.isDown) {
-      this.game.camera.x += G.CAMERA_PAN_SPEED * mod;
+      this.game.camera.x += G.CAMERA_PAN_SPEED * speedMod;
     }
   }
 }
