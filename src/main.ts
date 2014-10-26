@@ -3,13 +3,13 @@
 class G {
   static SCREEN_WIDTH:number = 800;
   static SCREEN_HEIGHT:number = 800;
-
   static MAP_SIZE:number = 100;
-
   static CAMERA_PAN_SPEED:number = 10;
 
-  static game:Phaser.Game;
   static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
+
+  static game:Phaser.Game;
+  static bottomBar:BottomBar;
 }
 
 interface Point {
@@ -395,13 +395,22 @@ class Game {
     this.state = new MainState();
     G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, "main", this.state);
 
-    var m:BottomBarModel = new BottomBarModel({
+    G.bottomBar = new BottomBar();
+  }
+}
+
+class BottomBar {
+  model:BottomBarModel;
+  view:BottomBarView;
+
+  constructor() {
+    this.model = new BottomBarModel({
       heading: "yolo"
     });
 
-    var v:BottomBarView = new BottomBarView({
+    this.view = new BottomBarView({
       el: $("#bottom-bar"),
-      model: m
+      model: this.model
     });
   }
 }

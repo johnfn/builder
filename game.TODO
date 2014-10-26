@@ -1,7 +1,10 @@
  ✔ A minimap would be sweet @done (00-12-31 16:03)
    ☐ Ugh, too slow. Maybe I can use shaders?
 
-
+ ☐ Some sort of tile ui
+   ☐ make some sort of view/model wrapper class
+   ☐ When you click on a tile, it updates the view w information
+   ☐ Buttons to build different thingies.
 
 
    ☐ Make repo private...
