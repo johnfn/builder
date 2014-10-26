@@ -3,6 +3,8 @@
 
  ☐ Some sort of tile ui
    ✔ make some sort of view/model wrapper class @done (14-10-26 13:48)
+   ☐ Grids need to use Tiles as base data type, not number.
+     ☐ Terrain needs to use TerrainTile. it only uses a number grid as an intermediary data structure to eventually build up the TerrainTile grid.
    ☐ When you click on a tile, it updates the view w information
      ☐ I need a sort of "find topmost tile for coordinate". really, i just need a "find all tiles under click" and then take the topmost one, but whatever.
      ☐  mouse logic should be moved outside of Terrain (and do the above...)
@@ -16,6 +18,12 @@
    ☐ Choose buildings to build. 1, 2, 3, 4.
    ☐ Need to be able to click to select grid points.
 
+refactoring
+ ☐ Eventually propagate all that TerrainTile.types stuff.
 
- bugs
-   ☐ if hasAllFourTiles is false, the loop will add extra tiles to the screen.
+bugs
+ ☐ if hasAllFourTiles is false, the loop will add extra tiles to the screen.
+
+
+stuff
+  ☐ Figure out why {'a': 1}[4] typechecks, even when typed.

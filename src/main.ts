@@ -115,15 +115,12 @@ class Tile {
 }
 
 class TerrainTile extends Tile {
+  static types:string[] = ["dirt", "grass", "sand", "water"];
+
   value:number = 0;
 
   constructor(value:number) {
-    super({
-      0: "dirt",
-      1: "grass",
-      2: "sand",
-      3: "water"
-    }[value], []);
+    super(TerrainTile.types[value], []);
   }
 }
 
@@ -337,21 +334,22 @@ class Resources extends Grid {
       }
     }
 
-    var largestGroups:Point[][] = [];
+    var largestGroups:{[key:string]: Point[]} = {};
 
-    for (var i = 0; i < 4; i++) {
+    for (var i:number = 0; i < TerrainTile.types.length; i++) {
       var maxIndex:number = 0;
+      var type:string = TerrainTile.types[i];
 
-      for (var j = 0; j < groups[i].length; j++) {
-        if (groups[i][j].length > groups[i][maxIndex].length) {
+      for (var j = 0; j < groups[type].length; j++) {
+        if (groups[type][j].length > groups[type][maxIndex].length) {
           maxIndex = j;
         }
       }
 
-      largestGroups[i] = groups[i][maxIndex];
+      largestGroups[i] = groups[type][maxIndex];
     }
 
-    for (var i = 0; i < largestGroups.length; i++) {
+    for (var i = 0; i < TerrainTile.types.length; i++) {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
         this.tiles[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
