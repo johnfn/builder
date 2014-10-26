@@ -51,7 +51,7 @@ var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
   return flood;
 };
 
-function make2dArray<T>(size:number, val:T):T[][] {
+var make2dArray = function<T>(size:number, val:T):T[][] {
   var result = [];
 
   for (var i = 0; i < size; i++) {
@@ -63,7 +63,7 @@ function make2dArray<T>(size:number, val:T):T[][] {
   }
 
   return result;
-}
+};
 
 /*
 class Minimap {
@@ -97,8 +97,8 @@ class Minimap {
 */
 
 class Tile {
-  tileName:string;
-  actions:string[];
+  public /*protected*/ tileName:string;
+  public /*protected*/ actions:string[];
 
   constructor(tileName:string, actions:string[]) {
     this.tileName = tileName;
@@ -114,6 +114,20 @@ class Tile {
   }
 }
 
+class TerrainTile extends Tile {
+  value:number = 0;
+  names:{[key: number]: string} = {
+    0: "dirt",
+    1: "grass",
+    2: "sand",
+    3: "water"
+  }
+
+  constructor(value:number) {
+    super(this.names[value], []);
+  }
+}
+
 class Building {
   sprite: Phaser.Sprite;
 
@@ -123,17 +137,17 @@ class Building {
 }
 
 class Grid extends Phaser.Group {
-  grid:number[][];
+  grid:Tile[][];
   tiles: Phaser.Sprite[][];
 
   public constructor() {
-    this.grid = make2dArray(G.MAP_SIZE, 0);
+    this.grid = make2dArray(G.MAP_SIZE, undefined);
     this.tiles = make2dArray(G.MAP_SIZE, undefined);
 
     super(G.game);
   }
 
-  public get(x:number, y:number):number {
+  public get(x:number, y:number):Tile {
     return this.grid[x][y];
   }
 }
@@ -145,10 +159,18 @@ class Terrain extends Grid {
   public constructor() {
     super();
 
-    this.placeTerrain();
+    // TODO: This needs to return values, not implicitly set grid.
+    var data:number[][] = this.placeTerrain();
 
-    while (!this.hasAllFourTiles()) {
-      this.placeTerrain();
+    while (!this.hasAllFourTiles(data)) {
+      data = this.placeTerrain();
+    }
+
+    // convert grid data values into TerrainTiles
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        this.grid[i][j] = new TerrainTile(data[i][j]);
+      }
     }
   }
 

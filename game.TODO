@@ -2,8 +2,9 @@
    ☐ Ugh, too slow. Maybe I can use shaders?
 
  ☐ Some sort of tile ui
-   ☐ make some sort of view/model wrapper class
+   ✔ make some sort of view/model wrapper class @done (14-10-26 13:48)
    ☐ When you click on a tile, it updates the view w information
+     ☐ I need a sort of "find topmost tile for coordinate". really, i just need a "find all tiles under click" and then take the topmost one, but whatever.
    ☐ Buttons to build different thingies.
 
 
