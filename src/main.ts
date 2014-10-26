@@ -17,7 +17,6 @@ interface Point {
   y: number
 }
 
-// TODO: Make general. Then, only flood fill like 50 steps for resources.
 var floodFill = function(x:number, y:number, type:number, grid:Grid):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
@@ -344,7 +343,6 @@ class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
   cursors: Phaser.CursorKeys;
   map:GameMap;
-  minimap:Minimap;
   shift:Phaser.Key;
 
   public preload():void {
@@ -390,14 +388,44 @@ class MainState extends Phaser.State {
   }
 }
 
-
 class Game {
   state: Phaser.State;
 
   constructor() {
     this.state = new MainState();
     G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, "main", this.state);
+
+    var m:BottomBarModel = new BottomBarModel({
+      heading: "yolo"
+    });
+
+    var v:BottomBarView = new BottomBarView({
+      el: $("#bottom-bar"),
+      model: m
+    });
   }
 }
 
-new Game();
+class BottomBarModel extends Backbone.Model {
+
+}
+
+class BottomBarView extends Backbone.View<BottomBarModel> {
+  template:(...data:any[]) => string; // can't set value here, because initialize is called BEFORE constructor (!)
+
+  initialize() {
+    this.template = _.template($("#bottom-bar-template").html());
+
+    this.render();
+  }
+
+  render() {
+    this.$el.html(this.template(this.model.toJSON()));
+
+    return this;
+  }
+}
+
+$(function() {
+  new Game();
+})

@@ -3,8 +3,8 @@
 // Definitions by: Boris Yankov <https://github.com/borisyankov/>, Natan Vivo <https://github.com/nvivo/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="../jquery/jquery.d.ts" />
-/// <reference path="../underscore/underscore.d.ts" />
+/// <reference path="jquery.d.ts" />
+/// <reference path="underscore.d.ts" />
 
 declare module Backbone {
 
