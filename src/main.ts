@@ -4,6 +4,7 @@ class G {
   static SCREEN_WIDTH:number = 800;
   static SCREEN_HEIGHT:number = 800;
   static MAP_SIZE:number = 100;
+  static TILE_SIZE:number = 32;
   static CAMERA_PAN_SPEED:number = 10;
 
   static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
@@ -17,7 +18,7 @@ interface Point {
   y: number
 }
 
-var floodFill = function(x:number, y:number, type:string, grid:Grid):Point[] {
+function floodFill(x:number, y:number, type:string, grid:Grid):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -49,9 +50,9 @@ var floodFill = function(x:number, y:number, type:string, grid:Grid):Point[] {
   }
 
   return flood;
-};
+}
 
-var make2dArray = function<T>(size:number, val:T):T[][] {
+function make2dArray<T>(size:number, val:T):T[][] {
   var result = [];
 
   for (var i = 0; i < size; i++) {
@@ -63,7 +64,7 @@ var make2dArray = function<T>(size:number, val:T):T[][] {
   }
 
   return result;
-};
+}
 
 /*
 class Minimap {
@@ -121,6 +122,14 @@ class TerrainTile extends Tile {
 
   constructor(value:number) {
     super(TerrainTile.types[value], []);
+  }
+}
+
+class ResourceTile extends Tile {
+  static types:string[] = ["ore", "trees", "marsh", "fish"];
+
+  public constructor(value:number) {
+    super(ResourceTile.types[value], []);
   }
 }
 
@@ -373,10 +382,21 @@ class GameMap extends Phaser.Group {
     this.layers.push(resources);
 
     super(G.game);
+
+    G.game.input.onUp.add(this.mouseUp, this);
+  }
+
+  public mouseUp() {
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
+
+    var tile:Tile = this.layers[0].get(Math.floor(mx / G.TILE_SIZE), Math.floor(my / G.TILE_SIZE));
+
+    console.log(tile.tileName);
   }
 
   public update() {
-    console.log(G.game.input.keyboard.isDown(49)); // 1
+
   }
 }
 
