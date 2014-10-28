@@ -115,13 +115,20 @@ class Tile {
   }
 }
 
-class TerrainTile extends Tile {
-  static types:string[] = ["dirt", "grass", "sand", "water"];
+interface TerrainTileInfo {
+  name:string
+  actions:string[]
+}
 
-  value:number = 0;
+class TerrainTile extends Tile {
+  static types:TerrainTileInfo[] = [
+    {name: "dirt",  actions: ["build thing"]},
+    {name: "grass", actions: []},
+    {name: "sand",  actions: []},
+    {name: "water", actions: []}];
 
   constructor(value:number) {
-    super(TerrainTile.types[value], []);
+    super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
   }
 }
 
@@ -347,7 +354,7 @@ class Resources extends Grid {
 
     for (var i:number = 0; i < TerrainTile.types.length; i++) {
       var maxIndex:number = 0;
-      var type:string = TerrainTile.types[i];
+      var type:string = TerrainTile.types[i].name;
 
       for (var j = 0; j < groups[type].length; j++) {
         if (groups[type][j].length > groups[type][maxIndex].length) {
@@ -492,7 +499,7 @@ class BottomBarModel extends Backbone.Model {
     return this.get('heading');
   }
 
-  setActions(actions:string):void {
+  setActions(actions:string[]):void {
     this.set('actions', actions);
   }
 
