@@ -106,7 +106,7 @@ class Tile {
     this.actions = actions;
   }
 
-  gettileName():string {
+  getTileName():string {
     return this.tileName;
   }
 
@@ -390,9 +390,13 @@ class GameMap extends Phaser.Group {
     var mx = G.game.input.worldX;
     var my = G.game.input.worldY;
 
+    var x = Math.floor(mx / G.TILE_SIZE);
+    var y = Math.floor(my / G.TILE_SIZE);
+
     var tile:Tile = this.layers[0].get(Math.floor(mx / G.TILE_SIZE), Math.floor(my / G.TILE_SIZE));
 
-    console.log(tile.tileName);
+    G.bottomBar.model.setHeading('Terrain: ' + tile.getTileName());
+    G.bottomBar.model.setActions(tile.getActions());
   }
 
   public update() {
@@ -461,23 +465,40 @@ class Game {
 }
 
 class BottomBar {
-  model:BottomBarModel;
+  public model:BottomBarModel;
   view:BottomBarView;
 
   constructor() {
     this.model = new BottomBarModel({
-      heading: "yolo"
+      heading: "yolo",
+      actions: ["action"]
     });
 
     this.view = new BottomBarView({
       el: $("#bottom-bar"),
       model: this.model
     });
+
+    this.view.listenTo(this.model, 'change', this.view.render);
   }
 }
 
 class BottomBarModel extends Backbone.Model {
+  setHeading(heading:string):void {
+    this.set('heading', heading);
+  }
 
+  getHeading():string {
+    return this.get('heading');
+  }
+
+  setActions(actions:string):void {
+    this.set('actions', actions);
+  }
+
+  getActions():string {
+    return this.get('actions');
+  }
 }
 
 class BottomBarView extends Backbone.View<BottomBarModel> {

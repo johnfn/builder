@@ -10,6 +10,9 @@
     <script id="bottom-bar-template" type="text/template">
       <div class="bottom-bar">
         <div class="title"> <%= heading %> </div>
+        <% _.each(actions, function(action) { %>
+          <button type="button"> <%= action %> </button>
+        <% }); %>
       </div>
     </script>
   </head>
