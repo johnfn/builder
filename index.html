@@ -7,9 +7,17 @@
     <script src="bower_components/backbone/backbone.js"></script>
     <script src="src/main.js"></script>
 
+    <script id="action-button" type="text/template">
+      <button type="button">
+        <%= action %>
+      </button>
+    </script>
+
     <script id="bottom-bar-template" type="text/template">
       <div class="bottom-bar">
         <div class="title"> <%= heading %> </div>
+
+        <div class="actions"> </div>
         <% _.each(actions, function(action) { %>
           <button type="button"> <%= action %> </button>
         <% }); %>

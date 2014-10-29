@@ -491,7 +491,7 @@ class BottomBar {
   constructor() {
     this.model = new BottomBarModel({
       heading: "yolo",
-      actions: ["action"]
+      actions: []
     });
 
     this.view = new BottomBarView({
@@ -513,11 +513,30 @@ class BottomBarModel extends Backbone.Model {
   }
 
   setActions(actions:string[]):void {
-    this.set('actions', actions);
+    var actionModels:ActionModel[] = [];
+
+    for (var i = 0; i < actions.length; i++) {
+      var model:ActionModel = new ActionModel();
+
+      model.setAction(actions[i]);
+      actionModels.push(model);
+    }
+
+    this.set('actions', actionModels);
   }
 
-  getActions():string {
+  getActions():ActionModel[] {
     return this.get('actions');
+  }
+}
+
+class ActionModel extends Backbone.Model {
+  setAction(action:string) {
+    this.set("action", action);
+  }
+
+  getAction():string {
+    return this.get('action');
   }
 }
 
@@ -528,6 +547,44 @@ class BottomBarView extends Backbone.View<BottomBarModel> {
     this.template = _.template($("#bottom-bar-template").html());
 
     this.render();
+  }
+
+  render() {
+    this.$el.html(this.template(this.model.toJSON()));
+
+    var actions:ActionModel[] = this.model.getActions();
+
+    for (var i = 0; i < actions.length; i++) {
+      var button:ActionButton = new ActionButton({
+        el: $("<div>").appendTo(this.$(".actions")),
+        model: actions[i]
+      });
+
+      button.render();
+    }
+
+    return this;
+  }
+}
+
+class ActionButton extends Backbone.View<ActionModel> {
+  template:(...data:any[]) => string;
+
+  constructor (options? ) {
+    this.events = <any>{
+      "click button": "click"
+    };
+
+    super(options);
+
+    this.template = _.template($("#action-button").html());
+  }
+
+  initialize() {
+  }
+
+  click(e) {
+    console.log(this.model.toJSON())
   }
 
   render() {
