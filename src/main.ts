@@ -140,14 +140,6 @@ class ResourceTile extends Tile {
   }
 }
 
-class Building {
-  sprite: Phaser.Sprite;
-
-  public constructor(type:number) {
-    this.sprite = G.game.add.sprite(0, 0, "buildings", type);
-  }
-}
-
 class Grid extends Phaser.Group {
   grid:Tile[][];
   tiles: Phaser.Sprite[][];
@@ -161,6 +153,27 @@ class Grid extends Phaser.Group {
 
   public get(x:number, y:number):Tile {
     return this.grid[x][y];
+  }
+}
+
+interface BuildingTileData {
+  name:string
+  actions:string[]
+}
+
+class BuildingTile extends Tile {
+  static types:BuildingTileData[] = [
+    {name: "Town Center", actions: []}
+  ]
+
+  constructor(value:number) {
+    super(BuildingTile.types[value].name, BuildingTile.types[value].actions);
+  }
+}
+
+class Buildings extends Grid {
+  public constructor() {
+    super();
   }
 }
 
@@ -377,16 +390,16 @@ class Resources extends Grid {
 class GameMap extends Phaser.Group {
   layers:Grid[];
 
-  buildings: Building[];
-
   public constructor() {
     var terrain:Terrain = new Terrain();
     var resources:Resources = new Resources(terrain);
+    var buildings:Buildings = new Buildings();
 
     this.layers = [];
 
     this.layers.push(terrain);
     this.layers.push(resources);
+    this.layers.push(buildings);
 
     super(G.game);
 

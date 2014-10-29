@@ -11,6 +11,23 @@
    ☐ Buttons to build different thingies.
 
 
+Resources:
+ ☐ Top tool bar.
+
+Buildings:
+  ☐ Town Center
+
+Units:
+ ☐ Gatherer.
+
+AIs:
+ ☐ Should have basic towns that you can thrash
+
+
+Refactoring:
+ ☐ Separate into different files, ref.ts etc...
+
+
    ☐ Make repo private...
    ✔ Need some sort of grid abstraction for different layers. @done (14-10-25 16:03)
    ☐ Add land bridges - MST, find closest shorelines, blah. (Except how do you do a MST of land masses...)
