@@ -200,6 +200,13 @@ class Terrain extends Grid {
 
   // TODO:: This crap should not be inside Terrain.
   public update() {
+    var mx_abs = G.game.input.x;
+    var my_abs = G.game.input.y;
+
+    if (mx_abs > G.SCREEN_WIDTH || my_abs > G.SCREEN_WIDTH) {
+      return;
+    }
+
     // mouse position, not relative to camera.
     var mx = G.game.input.worldX;
     var my = G.game.input.worldY;
