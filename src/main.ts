@@ -176,13 +176,13 @@ class Buildings extends Grid {
 
   public constructor() {
     super();
-
-    this.space = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
-    this.space.onUp.add(() => this.build());
   }
 
-  build() {
-    this.tiles[4][4] = G.game.add.sprite(400, 200, "buildings", 0);
+  public build(xy:number[]) {
+    var x = xy[0] * G.TILE_SIZE;
+    var y = xy[1] * G.TILE_SIZE;
+
+    this.tiles[4][4] = G.game.add.sprite(x, y, "buildings", 0);
   }
 }
 
@@ -405,24 +405,32 @@ class Resources extends Grid {
 
 class GameMap extends Phaser.Group {
   layers:Grid[];
+  terrain:Terrain;
+  resources:Resources;
+  buildings:Buildings;
+
+  zbutton:Phaser.Key;
 
   public constructor() {
-    var terrain:Terrain = new Terrain();
-    var resources:Resources = new Resources(terrain);
-    var buildings:Buildings = new Buildings();
+    this.terrain = new Terrain();
+    this.resources = new Resources(this.terrain);
+    this.buildings = new Buildings();
 
     this.layers = [];
 
-    this.layers.push(terrain);
-    this.layers.push(resources);
-    this.layers.push(buildings);
+    this.layers.push(this.terrain);
+    this.layers.push(this.resources);
+    this.layers.push(this.buildings);
 
     super(G.game);
 
     G.game.input.onUp.add(this.mouseUp, this);
+
+    this.zbutton = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
+    this.zbutton.onUp.add(() => this.build());
   }
 
-  public mouseUp() {
+  getXY():number[] {
     var mx_abs = G.game.input.x;
     var my_abs = G.game.input.y;
 
@@ -435,6 +443,19 @@ class GameMap extends Phaser.Group {
 
     var x = Math.floor(mx / G.TILE_SIZE);
     var y = Math.floor(my / G.TILE_SIZE);
+
+    return [x, y];
+  }
+
+  // TODO: I should take care of selectedtile.
+
+  build() {
+    this.buildings.build(this.getXY());
+  }
+
+  public mouseUp() {
+    var mx = G.game.input.worldX;
+    var my = G.game.input.worldY;
 
     var tile:Tile = this.layers[0].get(Math.floor(mx / G.TILE_SIZE), Math.floor(my / G.TILE_SIZE));
 
