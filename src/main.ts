@@ -144,16 +144,16 @@ class ResourceTile extends Tile {
 }
 
 class Grid extends Phaser.Group {
-  grid:Tile[][];
+  data:Tile[][];
 
   public constructor() {
-    this.grid = make2dArray(G.MAP_SIZE, undefined);
+    this.data = make2dArray(G.MAP_SIZE, undefined);
 
     super(G.game);
   }
 
   public get(x:number, y:number):Tile {
-    return this.grid[x][y];
+    return this.data[x][y];
   }
 }
 
@@ -183,8 +183,8 @@ class Buildings extends Grid {
     var x:number = xy[0];
     var y:number = xy[1];
 
-    this.grid[x][y] = new BuildingTile(0);
-    this.grid[x][y].sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
+    this.data[x][y] = new BuildingTile(0);
+    this.data[x][y].sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
   }
 }
 
@@ -204,8 +204,8 @@ class Terrain extends Grid {
         var x:number = i * G.TILE_SIZE;
         var y:number = j * G.TILE_SIZE;
 
-        this.grid[i][j] = new TerrainTile(data[i][j]);
-        this.grid[i][j].sprite = G.game.add.sprite(x, y, "tiles", data[i][j]);
+        this.data[i][j] = new TerrainTile(data[i][j]);
+        this.data[i][j].sprite = G.game.add.sprite(x, y, "tiles", data[i][j]);
       }
     }
   }
@@ -357,9 +357,9 @@ class Resources extends Grid {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
 
-        this.grid[i][j] = new ResourceTile(i);
+        this.data[i][j] = new ResourceTile(i);
 
-        this.grid[i][j].sprite = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+        this.data[i][j].sprite = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
       }
     }
   }
@@ -397,8 +397,8 @@ class GameMap extends Phaser.Group {
 
   getThingAt(x:number, y:number):Tile {
     for (var i = 0; i < this.layers.length; i++) {
-      if (this.layers[i].grid[x][y].sprite) {
-        return this.layers[i].grid[x][y];
+      if (this.layers[i].data[x][y].sprite) {
+        return this.layers[i].data[x][y];
       }
     }
 
