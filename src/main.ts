@@ -392,10 +392,10 @@ class GameMap extends Phaser.Group {
     G.game.input.onUp.add(this.mouseUp, this);
 
     this.zbutton = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
-    this.zbutton.onUp.add(() => this.build());
+    this.zbutton.onUp.add(() => this.pressZ());
   }
 
-  getThingAt(x:number, y:number):Tile {
+  getTileAt(x:number, y:number):Tile {
     for (var i = 0; i < this.layers.length; i++) {
       var layer:Grid = this.layers[this.layers.length - i - 1];
 
@@ -425,13 +425,15 @@ class GameMap extends Phaser.Group {
     return [x, y];
   }
 
-  // TODO: I should take care of selectedtile.
-
-  build() {
+  pressZ() {
     var x = this.selectedTile.sprite.x / G.TILE_SIZE;
     var y = this.selectedTile.sprite.y / G.TILE_SIZE;
 
-    this.buildings.build([x, y]);
+    if (this.selectedTile.getTileName() == "grass") {
+      this.buildings.build([x, y]);
+    } else {
+      console.log("build villager");
+    }
   }
 
   public mouseUp() {
@@ -446,7 +448,7 @@ class GameMap extends Phaser.Group {
 
   public update() {
     var mxy = this.getXY();
-    var tile = this.getThingAt(mxy[0], mxy[1]);
+    var tile = this.getTileAt(mxy[0], mxy[1]);
 
     if (tile != this.mousedOverTile) {
       if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.sprite.alpha = 1.0;
