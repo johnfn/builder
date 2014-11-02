@@ -366,6 +366,8 @@ declare module Backbone {
     var emulateHTTP: boolean;
     var emulateJSON: boolean;
 
+    function trigger(name: string, arguments?: any[]);
+
     // Utility
     function noConflict(): typeof Backbone;
     var $: JQueryStatic;

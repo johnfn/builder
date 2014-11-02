@@ -414,6 +414,13 @@ class GameMap extends Phaser.Group {
   }
 
   public mouseUp() {
+    var mx_abs = G.game.input.x;
+    var my_abs = G.game.input.y;
+
+    if (mx_abs > G.SCREEN_WIDTH || my_abs > G.SCREEN_WIDTH) {
+      return;
+    }
+
     var mx = G.game.input.worldX;
     var my = G.game.input.worldY;
 
@@ -592,6 +599,10 @@ class ActionButton extends Backbone.View<ActionModel> {
 
   click(e) {
     console.log(this.model.toJSON())
+
+    Backbone.trigger("ff");
+
+    return false;
   }
 
   render() {
