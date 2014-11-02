@@ -172,8 +172,17 @@ class BuildingTile extends Tile {
 }
 
 class Buildings extends Grid {
+  space: Phaser.Key;
+
   public constructor() {
     super();
+
+    this.space = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
+    this.space.onUp.add(() => this.build());
+  }
+
+  build() {
+    this.tiles[4][4] = G.game.add.sprite(400, 200, "buildings", 0);
   }
 }
 
@@ -585,16 +594,15 @@ class ActionButton extends Backbone.View<ActionModel> {
   template:(...data:any[]) => string;
 
   constructor (options? ) {
-    this.events = <any>{
-      "click button": "click"
-    };
-
     super(options);
 
     this.template = _.template($("#action-button").html());
   }
 
-  initialize() {
+  events() {
+    return {
+      "click button": "click"
+    };
   }
 
   click(e) {
@@ -606,7 +614,13 @@ class ActionButton extends Backbone.View<ActionModel> {
   }
 
   render() {
+    var self = this;
+
     this.$el.html(this.template(this.model.toJSON()));
+
+    this.$("button").on("click", function() {
+      console.log(self.model.toJSON());
+    });
 
     return this;
   }
