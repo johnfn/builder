@@ -1,3 +1,7 @@
+Notes to self -
+  - build buildings by click on tile and pressing Z
+
+
  ✔ A minimap would be sweet @done (00-12-31 16:03)
    ☐ Ugh, too slow. Maybe I can use shaders?
 
@@ -14,9 +18,8 @@
 Rando stuff:
  ✔ Refactor sprites into grid. @done (14-11-02 13:38)
  ✔ Derive the sprite type from the value passed into the constructor. (Could be annoying if you change it many times - maybe some sort of addTile() function? idk...) @done (14-11-02 13:38)
- ☐ Rename Grid.grid to Grid.tileData or something more descriptive, I keep getting confused...
+ ✔ Rename Grid.grid to Grid.tileData or something more descriptive, I keep getting confused... @done (14-11-02 13:40)
  ☐ Selection should look different than mouse highlight.
- ☐ Actually, the Tile thing should just have an associated sprite...
 
 Resources:
  ☐ Top tool bar.
@@ -26,13 +29,13 @@ Buildings:
 
 Units:
  ☐ Gatherer.
+   ☐ I should be able to click on a building.
 
 AIs:
  ☐ Should have basic towns that you can thrash
 
-
 Refactoring:
- ☐ Selection stuff should be in the layer thing.
+ ✔ Selection stuff should be in the layer thing. @done (14-11-02 13:48)
  ☐ Separate into different files, ref.ts etc...
  ☐ Make buttons into templates...
 

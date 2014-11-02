@@ -397,8 +397,10 @@ class GameMap extends Phaser.Group {
 
   getThingAt(x:number, y:number):Tile {
     for (var i = 0; i < this.layers.length; i++) {
-      if (this.layers[i].data[x][y].sprite) {
-        return this.layers[i].data[x][y];
+      var layer:Grid = this.layers[this.layers.length - i - 1];
+
+      if (layer.data[x][y] && layer.data[x][y].sprite) {
+        return layer.data[x][y];
       }
     }
 
