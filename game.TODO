@@ -12,8 +12,10 @@
 
 
 Rando stuff:
- ☐ Selection should look different than mouse highlight.
+ ☐ Refactor sprites into grid.
+ ☐ Derive the sprite type from the value passed into the constructor. (Could be annoying if you change it many times - maybe some sort of addTile() function? idk...)
  ☐ Rename Grid.grid to Grid.tileData or something more descriptive, I keep getting confused...
+ ☐ Selection should look different than mouse highlight.
  ☐ Actually, the Tile thing should just have an associated sprite...
 
 Resources:

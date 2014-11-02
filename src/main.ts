@@ -100,10 +100,13 @@ class Minimap {
 class Tile {
   public /*protected*/ tileName:string;
   public /*protected*/ actions:string[];
+  public sprite:Phaser.Sprite;
 
   constructor(tileName:string, actions:string[]) {
     this.tileName = tileName;
     this.actions = actions;
+
+    this.sprite = undefined;
   }
 
   getTileName():string {
@@ -142,11 +145,9 @@ class ResourceTile extends Tile {
 
 class Grid extends Phaser.Group {
   grid:Tile[][];
-  tiles: Phaser.Sprite[][];
 
   public constructor() {
     this.grid = make2dArray(G.MAP_SIZE, undefined);
-    this.tiles = make2dArray(G.MAP_SIZE, undefined);
 
     super(G.game);
   }
@@ -179,10 +180,11 @@ class Buildings extends Grid {
   }
 
   public build(xy:number[]) {
-    var x = xy[0] * G.TILE_SIZE;
-    var y = xy[1] * G.TILE_SIZE;
+    var x:number = xy[0];
+    var y:number = xy[1];
 
-    this.tiles[4][4] = G.game.add.sprite(x, y, "buildings", 0);
+    this.grid[x][y] = new BuildingTile(0);
+    this.grid[x][y].sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
   }
 }
 
@@ -199,7 +201,11 @@ class Terrain extends Grid {
     // convert grid data values into TerrainTiles
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
+        var x:number = i * G.TILE_SIZE;
+        var y:number = j * G.TILE_SIZE;
+
         this.grid[i][j] = new TerrainTile(data[i][j]);
+        this.grid[i][j].sprite = G.game.add.sprite(x, y, "tiles", data[i][j]);
       }
     }
   }
@@ -226,15 +232,6 @@ class Terrain extends Grid {
     var data:number[][] = this.generateTerrain(10);
     data = this.normalizeGrid(data);
     data = this.quantizeGrid(data, 4);
-
-    for (var i = 0; i < G.MAP_SIZE; i++) {
-      for (var j = 0; j < G.MAP_SIZE; j++) {
-        var x:number = i * 32;
-        var y:number = j * 32;
-
-        this.tiles[i][j] = G.game.add.sprite(x, y, "tiles", data[i][j]);
-      }
-    }
 
     return data;
   }
@@ -359,7 +356,10 @@ class Resources extends Grid {
     for (var i = 0; i < TerrainTile.types.length; i++) {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
-        this.tiles[i][j] = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+
+        this.grid[i][j] = new ResourceTile(i);
+
+        this.grid[i][j].sprite = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
       }
     }
   }
@@ -373,8 +373,8 @@ class GameMap extends Phaser.Group {
 
   zbutton:Phaser.Key;
 
-  mousedOverTile:Phaser.Sprite;
-  selectedTile:Phaser.Sprite;
+  mousedOverTile:Tile;
+  selectedTile:Tile;
 
   public constructor() {
     this.terrain = new Terrain();
@@ -395,10 +395,10 @@ class GameMap extends Phaser.Group {
     this.zbutton.onUp.add(() => this.build());
   }
 
-  getThingAt(x:number, y:number) {
+  getThingAt(x:number, y:number):Tile {
     for (var i = 0; i < this.layers.length; i++) {
-      if (this.layers[i].tiles[x][y]) {
-        return this.layers[i].tiles[x][y];
+      if (this.layers[i].grid[x][y].sprite) {
+        return this.layers[i].grid[x][y];
       }
     }
 
@@ -426,7 +426,10 @@ class GameMap extends Phaser.Group {
   // TODO: I should take care of selectedtile.
 
   build() {
-    this.buildings.build(this.getXY());
+    var x = this.selectedTile.sprite.x / G.TILE_SIZE;
+    var y = this.selectedTile.sprite.y / G.TILE_SIZE;
+
+    this.buildings.build([x, y]);
   }
 
   public mouseUp() {
@@ -444,18 +447,18 @@ class GameMap extends Phaser.Group {
     var tile = this.getThingAt(mxy[0], mxy[1]);
 
     if (tile != this.mousedOverTile) {
-      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
+      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.sprite.alpha = 1.0;
 
       this.mousedOverTile = tile;
-      this.mousedOverTile.alpha = 0.5;
+      this.mousedOverTile.sprite.alpha = 0.5;
     }
 
     if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
       if (tile != this.selectedTile) {
-        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
+        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.sprite.alpha = 1.0;
 
         this.selectedTile = tile;
-        this.selectedTile.alpha = 0.5;
+        this.selectedTile.sprite.alpha = 0.5;
       }
     }
   }
