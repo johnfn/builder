@@ -11,6 +11,11 @@
    ☐ Buttons to build different thingies.
 
 
+Rando stuff:
+ ☐ Selection should look different than mouse highlight.
+ ☐ Rename Grid.grid to Grid.tileData or something more descriptive, I keep getting confused...
+ ☐ Actually, the Tile thing should just have an associated sprite...
+
 Resources:
  ☐ Top tool bar.
 
@@ -25,6 +30,7 @@ AIs:
 
 
 Refactoring:
+ ☐ Selection stuff should be in the layer thing.
  ☐ Separate into different files, ref.ts etc...
  ☐ Make buttons into templates...
 

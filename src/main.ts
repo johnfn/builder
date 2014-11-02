@@ -187,9 +187,6 @@ class Buildings extends Grid {
 }
 
 class Terrain extends Grid {
-  mousedOverTile:Phaser.Sprite;
-  selectedTile:Phaser.Sprite;
-
   public constructor() {
     super();
 
@@ -203,41 +200,6 @@ class Terrain extends Grid {
     for (var i = 0; i < G.MAP_SIZE; i++) {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         this.grid[i][j] = new TerrainTile(data[i][j]);
-      }
-    }
-  }
-
-  // TODO:: This crap should not be inside Terrain.
-  public update() {
-    var mx_abs = G.game.input.x;
-    var my_abs = G.game.input.y;
-
-    if (mx_abs > G.SCREEN_WIDTH || my_abs > G.SCREEN_WIDTH) {
-      return;
-    }
-
-    // mouse position, not relative to camera.
-    var mx = G.game.input.worldX;
-    var my = G.game.input.worldY;
-
-    var tilex:number = Math.floor(mx / 32);
-    var tiley:number = Math.floor(my / 32);
-
-    var tile:Phaser.Sprite = this.tiles[tilex][tiley];
-
-    if (tile != this.mousedOverTile) {
-      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
-
-      this.mousedOverTile = tile;
-      this.mousedOverTile.alpha = 0.5;
-    }
-
-    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
-      if (tile != this.selectedTile) {
-        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
-
-        this.selectedTile = tile;
-        this.selectedTile.alpha = 0.5;
       }
     }
   }
@@ -411,6 +373,9 @@ class GameMap extends Phaser.Group {
 
   zbutton:Phaser.Key;
 
+  mousedOverTile:Phaser.Sprite;
+  selectedTile:Phaser.Sprite;
+
   public constructor() {
     this.terrain = new Terrain();
     this.resources = new Resources(this.terrain);
@@ -428,6 +393,17 @@ class GameMap extends Phaser.Group {
 
     this.zbutton = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
     this.zbutton.onUp.add(() => this.build());
+  }
+
+  getThingAt(x:number, y:number) {
+    for (var i = 0; i < this.layers.length; i++) {
+      if (this.layers[i].tiles[x][y]) {
+        return this.layers[i].tiles[x][y];
+      }
+    }
+
+    // Will likely never happen.
+    return undefined;
   }
 
   getXY():number[] {
@@ -464,7 +440,24 @@ class GameMap extends Phaser.Group {
   }
 
   public update() {
+    var mxy = this.getXY();
+    var tile = this.getThingAt(mxy[0], mxy[1]);
 
+    if (tile != this.mousedOverTile) {
+      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.alpha = 1.0;
+
+      this.mousedOverTile = tile;
+      this.mousedOverTile.alpha = 0.5;
+    }
+
+    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
+      if (tile != this.selectedTile) {
+        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.alpha = 1.0;
+
+        this.selectedTile = tile;
+        this.selectedTile.alpha = 0.5;
+      }
+    }
   }
 }
 
