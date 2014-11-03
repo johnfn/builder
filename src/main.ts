@@ -115,11 +115,11 @@ class Tile {
     this.sprite = undefined;
   }
 
-  getTileName():string {
+  getTileName = ():string => {
     return this.tileName;
   }
 
-  getActions():string[] {
+  getActions = ():string[] => {
     return this.actions;
   }
 }
@@ -194,12 +194,12 @@ class Grid extends Phaser.Group {
   data:Tile[][];
 
   public constructor() {
-    this.data = make2dArray(G.MAP_SIZE, undefined);
-
     super(G.game);
+
+    this.data = make2dArray(G.MAP_SIZE, undefined);
   }
 
-  public get(x:number, y:number):Tile {
+  public get = (x:number, y:number):Tile => {
     return this.data[x][y];
   }
 }
@@ -226,7 +226,7 @@ class Buildings extends Grid {
     super();
   }
 
-  public build(xy:number[]) {
+  public build = (xy:number[]) => {
     var x:number = xy[0];
     var y:number = xy[1];
 
@@ -256,6 +256,15 @@ class Terrain extends Grid {
       }
     }
   }
+
+  /*
+  bleh = (x:string) => {
+    var q = x.charAt(0);
+  }
+
+  TODO... https://typescript.codeplex.com/workitem/2215
+
+  */
 
   hasAllFourTiles(data:number[][]):boolean {
     var hasTileType:boolean[] = [false, false, false, false];
