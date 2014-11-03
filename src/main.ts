@@ -102,9 +102,15 @@ class Tile {
   public /*protected*/ actions:string[];
   public sprite:Phaser.Sprite;
 
+  public clickSignal:Phaser.Signal;
+  public unclickSignal:Phaser.Signal;
+
   constructor(tileName:string, actions:string[]) {
     this.tileName = tileName;
     this.actions = actions;
+
+    this.clickSignal = new Phaser.Signal();
+    this.unclickSignal = new Phaser.Signal();
 
     this.sprite = undefined;
   }
@@ -131,7 +137,21 @@ class TerrainTile extends Tile {
     {name: "water", actions: []}];
 
   constructor(value:number) {
+    _.bindAll(this, 'click', 'unclick');
+
     super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
+
+    this.clickSignal.add(this.click);
+    this.unclickSignal.add(this.unclick);
+  }
+
+  click() {
+    console.log("!");
+    this.sprite.alpha = 0.5;
+  }
+
+  unclick() {
+    this.sprite.alpha = 1.0;
   }
 }
 
@@ -482,10 +502,10 @@ class GameMap extends Phaser.Group {
 
     if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
       if (tile != this.selectedTile) {
-        if (this.selectedTile && this.selectedTile != this.mousedOverTile) this.selectedTile.sprite.alpha = 1.0;
+        if (this.selectedTile) this.selectedTile.unclickSignal.dispatch();
+        tile.clickSignal.dispatch();
 
         this.selectedTile = tile;
-        this.selectedTile.sprite.alpha = 0.5;
       }
     }
   }
