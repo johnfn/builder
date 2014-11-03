@@ -102,15 +102,15 @@ class Tile {
   public /*protected*/ actions:string[];
   public sprite:Phaser.Sprite;
 
-  public clickSignal:Phaser.Signal;
-  public unclickSignal:Phaser.Signal;
+  public clickSignal:Phaser.Signal = new Phaser.Signal();
+  public unclickSignal:Phaser.Signal = new Phaser.Signal();
+
+  public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
+  public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
 
   constructor(tileName:string, actions:string[]) {
     this.tileName = tileName;
     this.actions = actions;
-
-    this.clickSignal = new Phaser.Signal();
-    this.unclickSignal = new Phaser.Signal();
 
     this.sprite = undefined;
   }
@@ -130,6 +130,9 @@ interface TerrainTileInfo {
 }
 
 class TerrainTile extends Tile {
+  clicked:boolean = false;
+  hoveredOver:boolean = false;
+
   static types:TerrainTileInfo[] = [
     {name: "dirt",  actions: ["build thing"]},
     {name: "grass", actions: []},
@@ -137,21 +140,47 @@ class TerrainTile extends Tile {
     {name: "water", actions: []}];
 
   constructor(value:number) {
-    _.bindAll(this, 'click', 'unclick');
-
     super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
+
+    _.bindAll(this, 'click', 'unclick', 'hover', 'unhover', 'updateAlpha');
 
     this.clickSignal.add(this.click);
     this.unclickSignal.add(this.unclick);
+
+    this.mouseEnterSignal.add(this.hover);
+    this.mouseLeaveSignal.add(this.unhover);
+  }
+
+  updateAlpha() {
+    if (this.clicked || this.hoveredOver) {
+      this.sprite.alpha = 0.5;
+    } else {
+      this.sprite.alpha = 1.0;
+    }
   }
 
   click() {
-    console.log("!");
-    this.sprite.alpha = 0.5;
+    this.clicked = true;
+
+    this.updateAlpha();
   }
 
   unclick() {
-    this.sprite.alpha = 1.0;
+    this.clicked = false;
+
+    this.updateAlpha();
+  }
+
+  hover() {
+    this.hoveredOver = true;
+
+    this.updateAlpha();
+  }
+
+  unhover() {
+    this.hoveredOver = false;
+
+    this.updateAlpha();
   }
 }
 
@@ -494,10 +523,10 @@ class GameMap extends Phaser.Group {
     var tile = this.getTileAt(mxy[0], mxy[1]);
 
     if (tile != this.mousedOverTile) {
-      if (this.mousedOverTile && this.mousedOverTile != this.selectedTile) this.mousedOverTile.sprite.alpha = 1.0;
+      tile.mouseEnterSignal.dispatch();
+      if (this.mousedOverTile) this.mousedOverTile.mouseLeaveSignal.dispatch();
 
       this.mousedOverTile = tile;
-      this.mousedOverTile.sprite.alpha = 0.5;
     }
 
     if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
