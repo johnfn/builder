@@ -365,11 +365,34 @@ class Resources extends Grid {
   }
 }
 
+class UnitLayer extends Phaser.Group {
+  public constructor() {
+    super(G.game);
+
+    G.game.add.existing(this);
+  }
+
+  public addUnit(from:Tile, type:number = 0) {
+    var unit:Unit = new Unit(from.sprite.x + 32, from.sprite.y);
+
+    this.add(unit);
+  }
+}
+
+class Unit extends Phaser.Sprite {
+  public constructor(x:number, y:number) {
+    super(G.game, x, y, "units", 0);
+  }
+}
+
 class GameMap extends Phaser.Group {
-  layers:Grid[];
+  layers:Grid[] = [];
+
   terrain:Terrain;
   resources:Resources;
   buildings:Buildings;
+
+  units:UnitLayer;
 
   zbutton:Phaser.Key;
 
@@ -377,17 +400,17 @@ class GameMap extends Phaser.Group {
   selectedTile:Tile;
 
   public constructor() {
+    super(G.game);
+
     this.terrain = new Terrain();
     this.resources = new Resources(this.terrain);
     this.buildings = new Buildings();
-
-    this.layers = [];
 
     this.layers.push(this.terrain);
     this.layers.push(this.resources);
     this.layers.push(this.buildings);
 
-    super(G.game);
+    this.units = new UnitLayer();
 
     G.game.input.onUp.add(this.mouseUp, this);
 
@@ -432,7 +455,7 @@ class GameMap extends Phaser.Group {
     if (this.selectedTile.getTileName() == "grass") {
       this.buildings.build([x, y]);
     } else {
-      console.log("build villager");
+      this.units.addUnit(this.selectedTile);
     }
   }
 
@@ -477,6 +500,7 @@ class MainState extends Phaser.State {
   public preload():void {
     //fw, fh, num frames,
     this.load.spritesheet("tiles", "assets/tiles.png", 32, 32);
+    this.load.spritesheet("units", "assets/units.png", 32, 32);
     this.load.spritesheet("special", "assets/special.png", 32, 32);
     this.load.spritesheet("buildings", "assets/buildings.png", 32, 32);
   }

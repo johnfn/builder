@@ -21,6 +21,10 @@ Rando stuff:
  ✔ Rename Grid.grid to Grid.tileData or something more descriptive, I keep getting confused... @done (14-11-02 13:40)
  ☐ Selection should look different than mouse highlight.
 
+MouseClickRefactor:
+ ☐ On click, send a click event to whoever received it. So that terrain tiles can highlight themselves.
+ ☐ On click, also send an 'unclick' to whoever previously received the click.
+
 Resources:
  ☐ Top tool bar.
 
@@ -29,7 +33,11 @@ Buildings:
 
 Units:
  ☐ Gatherer.
-   ☐ I should be able to click on a building.
+   ✔ I should be able to click on a building. @done (14-11-02 13:59)
+   ☐ Then when I press Z, it makes a unit.
+     ☐ I need to have a separate layer type for units
+     ☐ I need to make a unit sprite.
+     ☐ The hit detection can be n^2 for now, but i wonder if phaser has quadtrees i can use.
 
 AIs:
  ☐ Should have basic towns that you can thrash
