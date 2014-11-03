@@ -142,8 +142,6 @@ class TerrainTile extends Tile {
   constructor(value:number) {
     super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
 
-    _.bindAll(this, 'click', 'unclick', 'hover', 'unhover', 'updateAlpha');
-
     this.clickSignal.add(this.click);
     this.unclickSignal.add(this.unclick);
 
@@ -151,7 +149,7 @@ class TerrainTile extends Tile {
     this.mouseLeaveSignal.add(this.unhover);
   }
 
-  updateAlpha() {
+  updateAlpha = () => {
     if (this.clicked || this.hoveredOver) {
       this.sprite.alpha = 0.5;
     } else {
@@ -159,25 +157,25 @@ class TerrainTile extends Tile {
     }
   }
 
-  click() {
+  click = () => {
     this.clicked = true;
 
     this.updateAlpha();
   }
 
-  unclick() {
+  unclick = () => {
     this.clicked = false;
 
     this.updateAlpha();
   }
 
-  hover() {
+  hover = () => {
     this.hoveredOver = true;
 
     this.updateAlpha();
   }
 
-  unhover() {
+  unhover = () => {
     this.hoveredOver = false;
 
     this.updateAlpha();
