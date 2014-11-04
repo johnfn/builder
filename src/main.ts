@@ -413,9 +413,8 @@ class Resources extends Grid {
       for (var j = 0; j < Math.min(largestGroups[i].length, 20); j++) {
         var p:Point = largestGroups[i][j];
 
-        this.data[i][j] = new ResourceTile(i);
-
-        this.data[i][j].sprite = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
+        this.data[p.x][p.y] = new ResourceTile(i);
+        this.data[p.x][p.y].sprite = G.game.add.sprite(p.x * 32, p.y * 32, "special", i);
       }
     }
   }
