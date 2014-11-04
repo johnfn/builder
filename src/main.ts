@@ -108,11 +108,20 @@ class Tile {
   public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
   public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
 
+  clicked:boolean = false;
+  hoveredOver:boolean = false;
+
   constructor(tileName:string, actions:string[]) {
     this.tileName = tileName;
     this.actions = actions;
 
     this.sprite = undefined;
+
+    this.clickSignal.add(this.click);
+    this.unclickSignal.add(this.unclick);
+
+    this.mouseEnterSignal.add(this.hover);
+    this.mouseLeaveSignal.add(this.unhover);
   }
 
   getTileName = ():string => {
@@ -121,32 +130,6 @@ class Tile {
 
   getActions = ():string[] => {
     return this.actions;
-  }
-}
-
-interface TerrainTileInfo {
-  name:string
-  actions:string[]
-}
-
-class TerrainTile extends Tile {
-  clicked:boolean = false;
-  hoveredOver:boolean = false;
-
-  static types:TerrainTileInfo[] = [
-    {name: "dirt",  actions: ["build thing"]},
-    {name: "grass", actions: []},
-    {name: "sand",  actions: []},
-    {name: "water", actions: []}];
-
-  constructor(value:number) {
-    super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
-
-    this.clickSignal.add(this.click);
-    this.unclickSignal.add(this.unclick);
-
-    this.mouseEnterSignal.add(this.hover);
-    this.mouseLeaveSignal.add(this.unhover);
   }
 
   updateAlpha = () => {
@@ -179,6 +162,23 @@ class TerrainTile extends Tile {
     this.hoveredOver = false;
 
     this.updateAlpha();
+  }
+}
+
+interface TerrainTileInfo {
+  name:string
+  actions:string[]
+}
+
+class TerrainTile extends Tile {
+  static types:TerrainTileInfo[] = [
+    {name: "dirt",  actions: ["build thing"]},
+    {name: "grass", actions: []},
+    {name: "sand",  actions: []},
+    {name: "water", actions: []}];
+
+  constructor(value:number) {
+    super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
   }
 }
 
