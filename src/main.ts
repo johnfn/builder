@@ -97,7 +97,15 @@ class Minimap {
 }
 */
 
-class Tile {
+interface Interactable {
+  clickSignal:Phaser.Signal;
+  unclickSignal:Phaser.Signal;
+
+  mouseEnterSignal:Phaser.Signal;
+  mouseLeaveSignal:Phaser.Signal;
+}
+
+class Tile implements Interactable {
   public /*protected*/ tileName:string;
   public /*protected*/ actions:string[];
   public sprite:Phaser.Sprite;
@@ -434,9 +442,56 @@ class UnitLayer extends Phaser.Group {
   }
 }
 
-class Unit extends Phaser.Sprite {
+class Unit extends Phaser.Sprite implements Interactable {
+  public clickSignal:Phaser.Signal = new Phaser.Signal();
+  public unclickSignal:Phaser.Signal = new Phaser.Signal();
+
+  public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
+  public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
+
+  public clicked:boolean = false;
+  public hoveredOver:boolean = false;
+
   public constructor(x:number, y:number) {
     super(G.game, x, y, "units", 0);
+
+    this.clickSignal.add(this.clickAction);
+    this.unclickSignal.add(this.unclick);
+
+    this.mouseEnterSignal.add(this.hover);
+    this.mouseLeaveSignal.add(this.unhover);
+  }
+
+  updateAlpha = () => {
+    if (this.clicked || this.hoveredOver) {
+      this.alpha = 0.5;
+    } else {
+      this.alpha = 1.0;
+    }
+  }
+
+  clickAction = () => {
+    this.clicked = true;
+
+    this.updateAlpha();
+  }
+
+  unclick = () => {
+    this.clicked = false;
+
+    this.updateAlpha();
+  }
+
+  hover = () => {
+    this.hoveredOver = true;
+
+    this.updateAlpha();
+  }
+
+  unhover = () => {
+    this.hoveredOver = false;
+
+    this.updateAlpha();
   }
 }
 
@@ -479,7 +534,7 @@ class GameMap extends Phaser.Group {
     // TODO pass through, use some sort of generic collision
     this.units.forEach(function(unit:Phaser.Sprite) {
       if (unit.x == x * 32 && unit.y == y * 32) {
-        var result = unit;
+        result = unit;
       }
     }, this);
 
