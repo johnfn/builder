@@ -474,6 +474,17 @@ class GameMap extends Phaser.Group {
   }
 
   getTileAt(x:number, y:number):Tile {
+    var result = undefined;
+
+    // TODO pass through, use some sort of generic collision
+    this.units.forEach(function(unit:Phaser.Sprite) {
+      if (unit.x == x * 32 && unit.y == y * 32) {
+        var result = unit;
+      }
+    }, this);
+
+    if (result) return result;
+
     for (var i = 0; i < this.layers.length; i++) {
       var layer:Grid = this.layers[this.layers.length - i - 1];
 
