@@ -429,69 +429,30 @@ class Resources extends Grid {
 }
 
 class UnitLayer extends Phaser.Group {
+  units:Unit[];
+
   public constructor() {
     super(G.game);
 
     G.game.add.existing(this);
+
+    this.units = [];
   }
 
   public addUnit(from:Tile, type:number = 0) {
     var unit:Unit = new Unit(from.sprite.x + 32, from.sprite.y);
 
-    this.add(unit);
+    this.add(unit.sprite);
+
+    this.units.push(unit);
   }
 }
 
-class Unit extends Phaser.Sprite implements Interactable {
-  public clickSignal:Phaser.Signal = new Phaser.Signal();
-  public unclickSignal:Phaser.Signal = new Phaser.Signal();
-
-  public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
-  public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
-
-  public clicked:boolean = false;
-  public hoveredOver:boolean = false;
-
+class Unit extends Tile {
   public constructor(x:number, y:number) {
-    super(G.game, x, y, "units", 0);
+    super("Unit", []);
 
-    this.clickSignal.add(this.clickAction);
-    this.unclickSignal.add(this.unclick);
-
-    this.mouseEnterSignal.add(this.hover);
-    this.mouseLeaveSignal.add(this.unhover);
-  }
-
-  updateAlpha = () => {
-    if (this.clicked || this.hoveredOver) {
-      this.alpha = 0.5;
-    } else {
-      this.alpha = 1.0;
-    }
-  }
-
-  clickAction = () => {
-    this.clicked = true;
-
-    this.updateAlpha();
-  }
-
-  unclick = () => {
-    this.clicked = false;
-
-    this.updateAlpha();
-  }
-
-  hover = () => {
-    this.hoveredOver = true;
-
-    this.updateAlpha();
-  }
-
-  unhover = () => {
-    this.hoveredOver = false;
-
-    this.updateAlpha();
+    this.sprite = G.game.add.sprite(x, y, "units", 0);
   }
 }
 
@@ -532,11 +493,14 @@ class GameMap extends Phaser.Group {
     var result = undefined;
 
     // TODO pass through, use some sort of generic collision
-    this.units.forEach(function(unit:Phaser.Sprite) {
-      if (unit.x == x * 32 && unit.y == y * 32) {
-        result = unit;
+    // TODO needs to be quite a bit more decoupled...
+    for (var i = 0; i < this.units.units.length; i++) {
+      var unit:Unit = this.units.units[i];
+
+      if (unit.sprite.x == x * 32 && unit.sprite.y == y * 32) {
+        return unit;
       }
-    }, this);
+    }
 
     if (result) return result;
 
