@@ -123,9 +123,8 @@ class Tile implements Interactable {
   clicked:boolean = false;
   hoveredOver:boolean = false;
 
-  constructor(tileName:string, actions:string[]) {
+  constructor(tileName:string) {
     this.tileName = tileName;
-    this.actions = actions;
 
     this.sprite = undefined;
 
@@ -178,20 +177,11 @@ class Tile implements Interactable {
   }
 }
 
-interface TerrainTileInfo {
-  name:string
-  actions:string[]
-}
-
 class TerrainTile extends Tile {
-  static types:TerrainTileInfo[] = [
-    {name: "dirt",  actions: ["build thing"]},
-    {name: "grass", actions: []},
-    {name: "sand",  actions: []},
-    {name: "water", actions: []}];
+  static types:string[] = [ "dirt", "grass", "sand", "water"];
 
   constructor(value:number) {
-    super(TerrainTile.types[value].name, TerrainTile.types[value].actions);
+    super(TerrainTile.types[value]);
   }
 }
 
@@ -199,7 +189,7 @@ class ResourceTile extends Tile {
   static types:string[] = ["ore", "trees", "marsh", "fish"];
 
   public constructor(value:number) {
-    super(ResourceTile.types[value], []);
+    super(ResourceTile.types[value]);
   }
 }
 
@@ -222,13 +212,9 @@ interface BuildingTileData {
   actions:string[]
 }
 
-class BuildingTile extends Tile {
-  static types:BuildingTileData[] = [
-    {name: "Town Center", actions: []}
-  ]
-
-  constructor(value:number) {
-    super(BuildingTile.types[value].name, BuildingTile.types[value].actions);
+class TownCenter extends Tile {
+  constructor() {
+    super("Town Center");
   }
 }
 
@@ -243,7 +229,7 @@ class Buildings extends Grid {
     var x:number = xy[0];
     var y:number = xy[1];
 
-    this.data[x][y] = new BuildingTile(0);
+    this.data[x][y] = new TownCenter();
     this.data[x][y].sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
   }
 }
@@ -411,7 +397,7 @@ class Resources extends Grid {
 
     for (var i:number = 0; i < TerrainTile.types.length; i++) {
       var maxIndex:number = 0;
-      var type:string = TerrainTile.types[i].name;
+      var type:string = TerrainTile.types[i];
 
       for (var j = 0; j < groups[type].length; j++) {
         if (groups[type][j].length > groups[type][maxIndex].length) {
@@ -455,7 +441,7 @@ class UnitLayer extends Phaser.Group {
 
 class Unit extends Tile {
   public constructor(x:number, y:number) {
-    super("Unit", []);
+    super("Unit");
 
     this.sprite = G.game.add.sprite(x, y, "units", 0);
 
@@ -561,8 +547,8 @@ class GameMap extends Phaser.Group {
 
     var tile:Tile = this.layers[0].get(Math.floor(mx / G.TILE_SIZE), Math.floor(my / G.TILE_SIZE));
 
-    G.bottomBar.model.setHeading('Terrain: ' + tile.getTileName());
-    G.bottomBar.model.setActions(tile.getActions());
+    //G.bottomBar.model.setHeading('Terrain: ' + tile.getTileName());
+    //G.bottomBar.model.setActions(tile.getActions());
   }
 
   public update() {
