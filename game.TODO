@@ -9,6 +9,9 @@ Units:
      ☐ The hit detection can be n^2 for now, but i wonder if phaser has quadtrees i can use.
    ☐ Units should be square-only, but walk between squares.
 
+Saving:
+ ☐ Meh...
+
 Rando stuff:
  ☐ Selection should look different than mouse highlight.
  ☐ Could do minimap faster in some other way?

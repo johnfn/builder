@@ -101,6 +101,8 @@ interface Interactable {
   clickSignal:Phaser.Signal;
   unclickSignal:Phaser.Signal;
 
+  rightClickSignal:Phaser.Signal;
+
   mouseEnterSignal:Phaser.Signal;
   mouseLeaveSignal:Phaser.Signal;
 }
@@ -112,6 +114,8 @@ class Tile implements Interactable {
 
   public clickSignal:Phaser.Signal = new Phaser.Signal();
   public unclickSignal:Phaser.Signal = new Phaser.Signal();
+
+  public rightClickSignal:Phaser.Signal = new Phaser.Signal();
 
   public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
   public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
@@ -135,6 +139,7 @@ class Tile implements Interactable {
   getTileName = ():string => {
     return this.tileName;
   }
+
 
   getActions = ():string[] => {
     return this.actions;
@@ -453,6 +458,12 @@ class Unit extends Tile {
     super("Unit", []);
 
     this.sprite = G.game.add.sprite(x, y, "units", 0);
+
+    this.rightClickSignal.add(() => this.move());
+  }
+
+  move() {
+    console.log("ding");
   }
 }
 
@@ -565,13 +576,17 @@ class GameMap extends Phaser.Group {
       this.mousedOverTile = tile;
     }
 
-    if (G.game.input.mouse.button !== Phaser.Mouse.NO_BUTTON) {
+    if (G.game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
       if (tile != this.selectedTile) {
         if (this.selectedTile) this.selectedTile.unclickSignal.dispatch();
         tile.clickSignal.dispatch();
 
         this.selectedTile = tile;
       }
+    }
+
+    if (G.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
+      if (this.selectedTile) this.selectedTile.rightClickSignal.dispatch();
     }
   }
 }
@@ -593,6 +608,8 @@ class MainState extends Phaser.State {
   public init():void {
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.game.world.setBounds(0, 0, G.MAP_SIZE * 32, G.MAP_SIZE * 32);
+
+    G.game.canvas.oncontextmenu = (e) => { e.preventDefault(); };
   }
 
   public create():void {
