@@ -8,6 +8,7 @@ Units:
      ✔ I need to make a unit sprite. @done (14-11-05 20:49)
      ✔ Only build buildings on land. @done (14-11-05 20:55)
      ☐ Only place units on land near building.
+       ☐ And not on buildings.
        ☐ Flood fill... again...yay
      ☐ Path finding. But units ignore other units, except they dont end on top of them.
    ☐ Units should be square-only, but walk between squares.

@@ -18,7 +18,7 @@ interface Point {
   y: number
 }
 
-function floodFill(x:number, y:number, type:string, grid:Grid):Point[] {
+function floodFill(x:number, y:number, type:string, grid:Grid, criteria:(t:Tile) => boolean):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -43,7 +43,7 @@ function floodFill(x:number, y:number, type:string, grid:Grid):Point[] {
 
       checked[next.x][next.y] = true;
 
-      if (grid.get(next.x, next.y).tileName == type) {
+      if (criteria(grid.get(next.x, next.y)) {
         neighbors.push(next);
       }
     }
@@ -379,7 +379,9 @@ class Resources extends Grid {
         }
 
         var tileName = this.terrain.get(i, j).tileName;
-        var fill:Point[] = floodFill(i, j, tileName, this.terrain);
+        var fill:Point[] = floodFill(i, j, tileName, this.terrain, (t:Tile) => {
+          return t.tileName == tileName;
+        });
 
         for (var k = 0; k < fill.length; k++) {
           hasBeenReached[fill[k].x][fill[k].y] = true;
