@@ -3,10 +3,13 @@ Notes to self -
 
 Units:
  ☐ Gatherer.
-   ☐ Then when I press Z, it makes a unit.
-     ☐ I need to have a separate layer type for units
-     ☐ I need to make a unit sprite.
-     ☐ The hit detection can be n^2 for now, but i wonder if phaser has quadtrees i can use.
+   ✔ Then when I press Z, it makes a unit. @done (14-11-05 20:49)
+     ✔ I need to have a separate layer type for units @done (14-11-05 20:49)
+     ✔ I need to make a unit sprite. @done (14-11-05 20:49)
+     ✔ Only build buildings on land. @done (14-11-05 20:55)
+     ☐ Only place units on land near building.
+       ☐ Flood fill... again...yay
+     ☐ Path finding. But units ignore other units, except they dont end on top of them.
    ☐ Units should be square-only, but walk between squares.
 
 Saving:

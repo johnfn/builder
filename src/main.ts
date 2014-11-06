@@ -550,7 +550,7 @@ class GameMap extends Phaser.Group {
 
     if (this.selectedTile.getTileName() == "grass") {
       this.buildings.build([x, y]);
-    } else {
+    } else if (this.selectedTile.getTileName() == "Town Center") {
       this.units.addUnit(this.selectedTile);
     }
   }
