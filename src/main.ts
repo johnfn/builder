@@ -9,6 +9,7 @@ class G {
 
   static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
 
+  static map:GameMap;
   static game:Phaser.Game;
   static bottomBar:BottomBar;
 }
@@ -43,7 +44,7 @@ function floodFill(x:number, y:number, type:string, grid:Grid, criteria:(t:Tile)
 
       checked[next.x][next.y] = true;
 
-      if (criteria(grid.get(next.x, next.y)) {
+      if (criteria(grid.get(next.x, next.y))) {
         neighbors.push(next);
       }
     }
@@ -488,8 +489,14 @@ class GameMap extends Phaser.Group {
     this.zbutton.onUp.add(() => this.pressZ());
   }
 
-  getTileAt(x:number, y:number):Tile {
-    var result = undefined;
+  public getTopmostTileAt(x:number, y:number):Tile {
+    var results:Tile[] = this.getTilesAt(x, y);
+
+    return results[0];
+  }
+
+  public getTilesAt(x:number, y:number):Tile[] {
+    var result:Tile[] = [];
 
     // TODO pass through, use some sort of generic collision
     // TODO needs to be quite a bit more decoupled...
@@ -497,22 +504,21 @@ class GameMap extends Phaser.Group {
       var unit:Unit = this.units.units[i];
 
       if (unit.sprite.x == x * 32 && unit.sprite.y == y * 32) {
-        return unit;
+        result.push(unit);
       }
     }
-
-    if (result) return result;
 
     for (var i = 0; i < this.layers.length; i++) {
       var layer:Grid = this.layers[this.layers.length - i - 1];
 
       if (layer.data[x][y] && layer.data[x][y].sprite) {
-        return layer.data[x][y];
+        result.push(layer.data[x][y]);
       }
     }
 
     // Will likely never happen.
-    return undefined;
+    return result;
+
   }
 
   getXY():number[] {
@@ -555,7 +561,7 @@ class GameMap extends Phaser.Group {
 
   public update() {
     var mxy = this.getXY();
-    var tile = this.getTileAt(mxy[0], mxy[1]);
+    var tile = this.getTopmostTileAt(mxy[0], mxy[1]);
 
     if (tile != this.mousedOverTile) {
       tile.mouseEnterSignal.dispatch();
@@ -602,6 +608,8 @@ class MainState extends Phaser.State {
 
   public create():void {
     this.map = new GameMap();
+
+    G.map = this.map;
 
     this.shift = G.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 
