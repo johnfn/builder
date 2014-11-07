@@ -19,7 +19,11 @@ interface Point {
   y: number
 }
 
-function floodFill<T>(x:number, y:number, type:string, grid:T[][], criteria:(t:T) => boolean):Point[] {
+interface Gettable<T> {
+  get:(x:number, y:number) => T;
+}
+
+function floodFill<T>(x:number, y:number, grid:Gettable<T>, criteria:(t:T) => boolean):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -44,7 +48,7 @@ function floodFill<T>(x:number, y:number, type:string, grid:T[][], criteria:(t:T
 
       checked[next.x][next.y] = true;
 
-      if (criteria(grid[next.x][next.y])) {
+      if (criteria(grid.get(next.x, next.y))) {
         neighbors.push(next);
       }
     }
@@ -194,7 +198,7 @@ class ResourceTile extends Tile {
   }
 }
 
-class Grid extends Phaser.Group {
+class Grid extends Phaser.Group implements Gettable<Tile> {
   public data:Tile[][];
 
   public constructor() {
@@ -380,7 +384,7 @@ class Resources extends Grid {
         }
 
         var tileName = this.terrain.get(i, j).tileName;
-        var fill:Point[] = floodFill(i, j, tileName, this.terrain.data, (t:Tile) => {
+        var fill:Point[] = floodFill(i, j, this.terrain, (t:Tile) => {
           return t.tileName == tileName;
         });
 
@@ -434,6 +438,21 @@ class UnitLayer extends Phaser.Group {
   }
 
   public addUnit(from:Tile, type:number = 0) {
+    var x:number = from.sprite.x / G.TILE_SIZE;
+    var y:number = from.sprite.y / G.TILE_SIZE;
+
+    var starter:Tile = G.map.getTileOfTypeAt(x, y, TerrainTile);
+
+    console.log(starter);
+
+    /*
+    var fill:Point[] = floodFill(x, y, G.map, (t:Tile[]) => {
+      for (var i = 0; i < t.length; i++) {
+        if (t[i].tileName == )
+      }
+    });
+*/
+
     var unit:Unit = new Unit(from.sprite.x + 32, from.sprite.y);
 
     this.add(unit.sprite);
@@ -456,7 +475,7 @@ class Unit extends Tile {
   }
 }
 
-class GameMap extends Phaser.Group {
+class GameMap extends Phaser.Group implements Gettable<Tile[]> {
   layers:Grid[] = [];
 
   terrain:Terrain;
@@ -489,13 +508,27 @@ class GameMap extends Phaser.Group {
     this.zbutton.onUp.add(() => this.pressZ());
   }
 
+  // TODO I'm sure there's a better way to type this...
+  // (esp bc tileType has to be a Tile subclass. fun)
+  public getTileOfTypeAt(x:number, y:number, tileType:any) {
+    var tiles:Tile[] = this.get(x, y);
+
+    for (var i = 0; i < tiles.length; i++) {
+      if (tiles[i] instanceof tileType) {
+        return tiles[i];
+      }
+    }
+
+    return undefined;
+  }
+
   public getTopmostTileAt(x:number, y:number):Tile {
-    var results:Tile[] = this.getTilesAt(x, y);
+    var results:Tile[] = this.get(x, y);
 
     return results[0];
   }
 
-  public getTilesAt(x:number, y:number):Tile[] {
+  public get(x:number, y:number):Tile[] {
     var result:Tile[] = [];
 
     // TODO pass through, use some sort of generic collision
