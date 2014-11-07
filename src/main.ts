@@ -19,7 +19,7 @@ interface Point {
   y: number
 }
 
-function floodFill(x:number, y:number, type:string, grid:Grid, criteria:(t:Tile) => boolean):Point[] {
+function floodFill<T>(x:number, y:number, type:string, grid:T[][], criteria:(t:T) => boolean):Point[] {
   var flood:Point[] = [];
   var neighbors:Point[] = [{x: x, y: y}];
   var checked:boolean[][] = make2dArray(G.MAP_SIZE, false);
@@ -44,7 +44,7 @@ function floodFill(x:number, y:number, type:string, grid:Grid, criteria:(t:Tile)
 
       checked[next.x][next.y] = true;
 
-      if (criteria(grid.get(next.x, next.y))) {
+      if (criteria(grid[next.x][next.y])) {
         neighbors.push(next);
       }
     }
@@ -195,7 +195,7 @@ class ResourceTile extends Tile {
 }
 
 class Grid extends Phaser.Group {
-  data:Tile[][];
+  public data:Tile[][];
 
   public constructor() {
     super(G.game);
@@ -380,7 +380,7 @@ class Resources extends Grid {
         }
 
         var tileName = this.terrain.get(i, j).tileName;
-        var fill:Point[] = floodFill(i, j, tileName, this.terrain, (t:Tile) => {
+        var fill:Point[] = floodFill(i, j, tileName, this.terrain.data, (t:Tile) => {
           return t.tileName == tileName;
         });
 

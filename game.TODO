@@ -12,6 +12,7 @@ Units:
        ☐ Flood fill... again...yay
      ☐ Path finding. But units ignore other units, except they dont end on top of them.
    ☐ Units should be square-only, but walk between squares.
+   ☐ Then they can harvest resources..whoa
 
 Saving:
  ☐ Meh...
