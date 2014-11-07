@@ -443,17 +443,35 @@ class UnitLayer extends Phaser.Group {
 
     var starter:Tile = G.map.getTileOfTypeAt(x, y, TerrainTile);
 
-    console.log(starter);
+    // Find a place to place the unit...
 
-    /*
     var fill:Point[] = floodFill(x, y, G.map, (t:Tile[]) => {
       for (var i = 0; i < t.length; i++) {
-        if (t[i].tileName == )
+        if (t[i].tileName == starter.tileName) {
+          return true;
+        }
       }
-    });
-*/
 
-    var unit:Unit = new Unit(from.sprite.x + 32, from.sprite.y);
+      return false;
+    });
+
+    debugger;
+
+    // That isn't covered by anything.
+    var destination:Point = undefined;
+
+    for (var i = 0; i < fill.length; i++) {
+      // If the length is 1, the only thing there will be the terrain itself.
+
+      // TODO kinda embeds some logic that should beinside map.
+      if (G.map.get(fill[i].x, fill[i].y).length == 1) {
+        destination = fill[i];
+
+        break;
+      }
+    }
+
+    var unit:Unit = new Unit(destination.x * G.TILE_SIZE, destination.y * G.TILE_SIZE);
 
     this.add(unit.sprite);
 
