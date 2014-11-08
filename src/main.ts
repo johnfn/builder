@@ -74,7 +74,7 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
   backtrack[p2s(start)] = undefined;
 
   while (closest.length != 0) {
-    var current:PathfindNode = closest.unshift();
+    var current:PathfindNode = closest.shift();
 
     if (current.p.x == dest.x && current.p.y == dest.y) break;
 
