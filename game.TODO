@@ -7,9 +7,9 @@ Units:
      ✔ I need to have a separate layer type for units @done (14-11-05 20:49)
      ✔ I need to make a unit sprite. @done (14-11-05 20:49)
      ✔ Only build buildings on land. @done (14-11-05 20:55)
-     ☐ Only place units on land near building.
-       ☐ And not on buildings.
-       ☐ Flood fill... again...yay
+     ✔ Only place units on land near building. @done (14-11-07 20:34)
+       ✔ And not on buildings. @done (14-11-07 20:34)
+       ✔ Flood fill... again...yay @done (14-11-07 20:34)
      ☐ Path finding. But units ignore other units, except they dont end on top of them.
    ☐ Units should be square-only, but walk between squares.
    ☐ Then they can harvest resources..whoa

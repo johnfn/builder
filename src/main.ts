@@ -446,25 +446,14 @@ class UnitLayer extends Phaser.Group {
     // Find a place to place the unit...
 
     var fill:Point[] = floodFill(x, y, G.map, (t:Tile[]) => {
-      for (var i = 0; i < t.length; i++) {
-        if (t[i].tileName == starter.tileName) {
-          return true;
-        }
-      }
-
-      return false;
+      return _.chain(t).pluck("tileName").contains(starter.tileName).value();
     });
-
-    debugger;
 
     // That isn't covered by anything.
     var destination:Point = undefined;
 
     for (var i = 0; i < fill.length; i++) {
-      // If the length is 1, the only thing there will be the terrain itself.
-
-      // TODO kinda embeds some logic that should beinside map.
-      if (G.map.get(fill[i].x, fill[i].y).length == 1) {
+      if (G.map.isEmpty(fill[i].x, fill[i].y)) {
         destination = fill[i];
 
         break;
@@ -538,6 +527,10 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     }
 
     return undefined;
+  }
+
+  public isEmpty(x:number, y:number):boolean {
+    return this.get(x, y).length == 1;
   }
 
   public getTopmostTileAt(x:number, y:number):Tile {

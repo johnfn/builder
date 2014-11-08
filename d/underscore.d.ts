@@ -630,7 +630,7 @@ interface UnderscoreStatic {
 	size<T>(list: _.Collection<T>): number;
 
 	/**
-	* Split array into two arrays: 
+	* Split array into two arrays:
 	* one whose elements all satisfy predicate and one whose elements all do not satisfy predicate.
 	* @param array Array to split in two.
 	* @param iterator Filter iterator function for each element in `array`.
@@ -978,8 +978,8 @@ interface UnderscoreStatic {
 
 	/**
 	* Partially apply a function by filling in any number of its arguments, without changing its dynamic this value.
-	* A close cousin of bind.  You may pass _ in your list of arguments to specify an argument that should not be 
-	* pre-filled, but left open to supply at call-time. 
+	* A close cousin of bind.  You may pass _ in your list of arguments to specify an argument that should not be
+	* pre-filled, but left open to supply at call-time.
 	* @param fn Function to partially fill in arguments.
 	* @param arguments The partial arguments.
 	* @return `fn` with partially filled in arguments.
@@ -1474,7 +1474,7 @@ interface UnderscoreStatic {
 	**/
 	template(templateString: string): (...data: any[]) => string;
     	template(templateString: string, data: any, settings?: _.TemplateSettings): string;
-    	
+
 	/**
 	* By default, Underscore uses ERB-style template delimiters, change the
 	* following template settings to use alternative delimiters.
@@ -3152,7 +3152,7 @@ interface _Chain<T> {
 	* Wrapped type `any`.
 	* @see _.value
 	**/
-	value<TResult>(): T[];
+	value<TResult>(): any;
 }
 interface _ChainSingle<T> {
 	value(): T;
