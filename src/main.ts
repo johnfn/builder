@@ -518,7 +518,7 @@ class UnitLayer extends Phaser.Group {
 }
 
 enum UnitState {
-  Standing,
+  Idle,
   Walking
 }
 
@@ -539,7 +539,9 @@ class UnitSprite extends Phaser.Sprite {
 }
 
 class Unit extends Tile {
-  state:UnitState;
+  state:UnitState = UnitState.Idle;
+
+  currentPath:Point[] = [];
 
   public constructor(x:number, y:number) {
     super("Unit");
@@ -564,11 +566,24 @@ class Unit extends Tile {
       G.game.add.sprite(path[i].x * 32, path[i].y * 32, "units", 0);
     }
 
-    console.log(path);
+    this.currentPath = path;
+  }
+
+  walk() {
+    console.log("walkin");
   }
 
   update() {
-    console.log("!");
+    switch (this.state) {
+      case UnitState.Idle:
+        if (this.currentPath.length !== 0) {
+          this.state = UnitState.Walking;
+        }
+
+        break;
+      case UnitState.Walking:
+        this.walk();
+    }
   }
 }
 
