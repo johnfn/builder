@@ -542,6 +542,7 @@ class Unit extends Tile {
   state:UnitState = UnitState.Idle;
 
   currentPath:Point[] = [];
+  speed:number = 4;
 
   public constructor(x:number, y:number) {
     super("Unit");
@@ -568,7 +569,10 @@ class Unit extends Tile {
   }
 
   walk() {
-    var nextDest:Point = this.currentPath[this.currentPath.length - 1];
+    var p:Point = this.currentPath[this.currentPath.length - 1];
+    var nextDest:Point = {x: p.x, y: p.y}; // clone
+    nextDest.x *= G.TILE_SIZE;
+    nextDest.y *= G.TILE_SIZE;
 
     if (this.sprite.x == nextDest.x && this.sprite.y == nextDest.y) {
       this.currentPath.pop();
@@ -579,8 +583,8 @@ class Unit extends Tile {
       return;
     }
 
-    this.sprite.x += Phaser.Math.sign(nextDest.x - this.sprite.x);
-    this.sprite.y += -1 * Phaser.Math.sign(nextDest.y - this.sprite.y);
+    this.sprite.x += this.speed * Phaser.Math.sign(nextDest.x - this.sprite.x);
+    this.sprite.y += this.speed * Phaser.Math.sign(nextDest.y - this.sprite.y);
 
     console.log(this.sprite.x, this.sprite.y);
   }
