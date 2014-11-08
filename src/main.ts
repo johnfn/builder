@@ -555,22 +555,34 @@ class Unit extends Tile {
   }
 
   move(x:number, y:number) {
-    var here:Point = {x: this.sprite.x / G.TILE_SIZE, y: this.sprite.y / G.TILE_SIZE};
+    if (this.currentPath.length > 0) return; // TODO! click signal refactor.
+
+    var here:Point = {x: (this.sprite.x / G.TILE_SIZE), y: (this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
     var path:Point[] = pathfind(here, dest, G.map, function(t:Tile[]) {
       return _.chain(t).pluck("tileName").contains("grass").value();
     });
 
-    for (var i = 0; i < path.length; i++) {
-      G.game.add.sprite(path[i].x * 32, path[i].y * 32, "units", 0);
-    }
-
     this.currentPath = path;
   }
 
   walk() {
-    console.log("walkin");
+    var nextDest:Point = this.currentPath[this.currentPath.length - 1];
+
+    if (this.sprite.x == nextDest.x && this.sprite.y == nextDest.y) {
+      this.currentPath.pop();
+    }
+
+    if (this.currentPath.length == 0) {
+      this.state = UnitState.Idle;
+      return;
+    }
+
+    this.sprite.x += Phaser.Math.sign(nextDest.x - this.sprite.x);
+    this.sprite.y += -1 * Phaser.Math.sign(nextDest.y - this.sprite.y);
+
+    console.log(this.sprite.x, this.sprite.y);
   }
 
   update() {
