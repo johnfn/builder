@@ -11,6 +11,7 @@ Units:
        ✔ And not on buildings. @done (14-11-07 20:34)
        ✔ Flood fill... again...yay @done (14-11-07 20:34)
      ☐ Path finding. But units ignore other units, except they dont end on top of them.
+     ☐ If you click somewhere they can't go, they should make a best guess.
    ☐ Units should be square-only, but walk between squares.
    ☐ Then they can harvest resources..whoa
 

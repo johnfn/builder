@@ -57,6 +57,46 @@ function floodFill<T>(x:number, y:number, grid:Gettable<T>, criteria:(t:T) => bo
   return flood;
 }
 
+interface PathfindNode {
+  p:Point
+  score:number
+}
+
+function dist(p1:Point, p2:Point):number {
+  return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+}
+
+function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) => boolean):Point[] {
+  function p2s(point:Point):string { return point.x + "," + point.y; };
+
+  var closest:PathfindNode[] = [{p:start, score:dist(start, dest)}];
+  var backtrack:{[key: string]: Point};
+  backtrack[p2s(start)] = undefined;
+
+  var result:PathfindNode[] = [];
+
+  while (closest.length != 0) {
+    var current:PathfindNode = closest.pop();
+
+    if (current.p.x == dest.x && current.p.y == dest.y) break;
+
+    for (var i = 0; i < G.delta4.length; i++) {
+      var next:Point = {x: current.p.x + G.delta4[i].x, y: current.p.y + G.delta4[i].y};
+      var hash = p2s(next);
+
+      // TODO - may one way want to accomodate for different paths being faster.
+      if (hash in backtrack) continue;
+
+      backtrack[hash] = current.p;
+      closest.push({p: next, score: dist(next, dest)});
+    }
+
+    closest = _.sortBy(closest, function(node:PathfindNode) { return node.score; });
+  }
+
+  console.log(backtrack);
+}
+
 function make2dArray<T>(size:number, val:T):T[][] {
   var result = [];
 
@@ -474,11 +514,11 @@ class Unit extends Tile {
 
     this.sprite = G.game.add.sprite(x, y, "units", 0);
 
-    this.rightClickSignal.add(() => this.move());
+    this.rightClickSignal.add((x:number, y:number) => this.move(x, y));
   }
 
-  move() {
-    console.log("ding");
+  move(x:number, y:number) {
+    console.log(x, y);
   }
 }
 
@@ -624,7 +664,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     }
 
     if (G.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
-      if (this.selectedTile) this.selectedTile.rightClickSignal.dispatch();
+      if (this.selectedTile) this.selectedTile.rightClickSignal.dispatch(mxy[0], mxy[1]);
     }
   }
 }
