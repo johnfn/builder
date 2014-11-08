@@ -73,8 +73,6 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
   var backtrack:{[key: string]: Point};
   backtrack[p2s(start)] = undefined;
 
-  var result:PathfindNode[] = [];
-
   while (closest.length != 0) {
     var current:PathfindNode = closest.pop();
 
@@ -85,7 +83,9 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
       var hash = p2s(next);
 
       // TODO - may one way want to accomodate for different paths being faster.
+      // the next line assumes that a newer path will never be faster than one we already found.
       if (hash in backtrack) continue;
+      if (!criteria(grid.get(next.x, next.y))) continue;
 
       backtrack[hash] = current.p;
       closest.push({p: next, score: dist(next, dest)});
@@ -94,7 +94,15 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
     closest = _.sortBy(closest, function(node:PathfindNode) { return node.score; });
   }
 
-  console.log(backtrack);
+  var result:Point[] = [];
+  var currentBacktrack:Point = backtrack[p2s(dest)];
+
+  while (currentBacktrack.x != start.x && currentBacktrack.y != start.y) {
+    result.push(currentBacktrack);
+    currentBacktrack = backtrack[p2s(currentBacktrack)];
+  }
+
+  return result;
 }
 
 function make2dArray<T>(size:number, val:T):T[][] {
@@ -518,7 +526,14 @@ class Unit extends Tile {
   }
 
   move(x:number, y:number) {
-    console.log(x, y);
+    var here:Point = {x: this.sprite.x / G.TILE_SIZE, y: this.sprite.y / G.TILE_SIZE};
+    var dest:Point = {x: x, y: y};
+
+    var path:Point[] = pathfind(here, dest, G.map, function(t:Tile[]) {
+      return _.chain(t).pluck("tileName").contains("grass").value();
+    });
+
+    console.log(path);
   }
 }
 
