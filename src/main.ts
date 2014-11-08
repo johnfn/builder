@@ -103,8 +103,6 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
     currentBacktrack = backtrack[p2s(currentBacktrack)];
   }
 
-  console.log("start was: ", start);
-
   return result;
 }
 
@@ -519,13 +517,39 @@ class UnitLayer extends Phaser.Group {
   }
 }
 
+enum UnitState {
+  Standing,
+  Walking
+}
+
+// Really the only reason this exists is so I can override update, but eh.
+// I'm sure I'll think of another reason for it someday.
+class UnitSprite extends Phaser.Sprite {
+  public updateSignal:Phaser.Signal = new Phaser.Signal();
+
+  constructor(x:number, y:number) {
+    super(G.game, x, y, "units", 0);
+
+    G.game.add.existing(this);
+  }
+
+  update() {
+    this.updateSignal.dispatch();
+  }
+}
+
 class Unit extends Tile {
+  state:UnitState;
+
   public constructor(x:number, y:number) {
     super("Unit");
 
-    this.sprite = G.game.add.sprite(x, y, "units", 0);
+    var unitSprite:UnitSprite = new UnitSprite(x, y);
+    this.sprite = unitSprite;
 
     this.rightClickSignal.add((x:number, y:number) => this.move(x, y));
+
+    unitSprite.updateSignal.add(() => this.update());
   }
 
   move(x:number, y:number) {
@@ -541,6 +565,10 @@ class Unit extends Tile {
     }
 
     console.log(path);
+  }
+
+  update() {
+    console.log("!");
   }
 }
 
