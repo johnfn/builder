@@ -92,16 +92,13 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
       closest.push({p: next, score: dist(next, dest)});
     }
 
-    debugger;
     closest = _.sortBy(closest, function(node:PathfindNode) { return node.score; });
   }
 
   var result:Point[] = [];
   var currentBacktrack:Point = backtrack[p2s(dest)];
 
-  debugger;
-
-  while (currentBacktrack.x != start.x && currentBacktrack.y != start.y) {
+  while (currentBacktrack.x != start.x || currentBacktrack.y != start.y) {
     result.push(currentBacktrack);
     currentBacktrack = backtrack[p2s(currentBacktrack)];
   }
