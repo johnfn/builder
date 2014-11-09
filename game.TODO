@@ -10,7 +10,9 @@ Units:
      ✔ Only place units on land near building. @done (14-11-07 20:34)
        ✔ And not on buildings. @done (14-11-07 20:34)
        ✔ Flood fill... again...yay @done (14-11-07 20:34)
-     ☐ Path finding. But units ignore other units, except they dont end on top of them.
+     ✔ Path finding.  @done (14-11-08 16:01)
+     ☐ But units ignore other units, except they dont end on top of them.
+       ☐ This is harder when you consider 2 units can be moving simultaneously. Need to keep track of every units destination, and if you tell a unit to go somewhere someone else already has as a destination, find the nearest non-destined grid and go there instead.
      ☐ If you click somewhere they can't go, they should make a best guess. Rather than crashing.
      ☐ Make right click signal only on release
    ☐ Units should be square-only, but walk between squares.

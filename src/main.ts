@@ -69,6 +69,7 @@ function dist(p1:Point, p2:Point):number {
 function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) => boolean):Point[] {
   function p2s(point:Point):string { return point.x + "," + point.y; };
 
+  var closestPoint:Point;
   var closest:PathfindNode[] = [{p:start, score:dist(start, dest)}];
   var backtrack:{[key: string]: Point} = {};
   backtrack[p2s(start)] = undefined;
@@ -76,6 +77,7 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
   while (closest.length != 0) {
     var current:PathfindNode = closest.shift();
 
+    if (!closestPoint || dist(current.p, dest) < dist(closestPoint, dest)) closestPoint = current.p;
     if (current.p.x == dest.x && current.p.y == dest.y) break;
 
     for (var i = 0; i < G.delta4.length; i++) {
@@ -95,8 +97,8 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
     closest = _.sortBy(closest, function(node:PathfindNode) { return node.score; });
   }
 
-  var result:Point[] = [];
-  var currentBacktrack:Point = backtrack[p2s(dest)];
+  var result:Point[] = [closestPoint];
+  var currentBacktrack:Point = backtrack[p2s(closestPoint)];
 
   while (currentBacktrack.x != start.x || currentBacktrack.y != start.y) {
     result.push(currentBacktrack);
