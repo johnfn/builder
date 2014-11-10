@@ -2,6 +2,7 @@ Notes to self -
   - build buildings by click on tile and pressing Z
 
 Units:
+ ☐ Builder.
  ☐ Gatherer.
    ✔ Then when I press Z, it makes a unit. @done (14-11-05 20:49)
      ✔ I need to have a separate layer type for units @done (14-11-05 20:49)
@@ -15,9 +16,11 @@ Units:
        ☐ This is harder when you consider 2 units can be moving simultaneously. Need to keep track of every units destination, and if you tell a unit to go somewhere someone else already has as a destination, find the nearest non-destined grid and go there instead.
        ☐ Meh, a better idea is that if a unit is about to move onto a square w/ a unit on it, for it to not continue to move, but to keep trying until it can get there.
      ✔ If you click somewhere they can't go, they should make a best guess. Rather than crashing. @done (14-11-08 16:11)
-     ☐ Make right click signal only on release
+     ✔ Make right click signal only on release @done (14-11-09 16:42)
    ✔ Units should be square-only, but walk between squares. @done (14-11-09 15:41)
    ☐ Then they can harvest resources..whoa
+   ☐ And return them at special buildings, but dont do that until I have builders.
+   ☐ How come I can't reassign their destinations?
 
 Saving:
  ☐ Meh...

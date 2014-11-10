@@ -521,7 +521,10 @@ class UnitLayer extends Phaser.Group {
 
 enum UnitState {
   Idle,
-  Mining,
+  Mining_Walking,
+  Mining_Gathering,
+  Mining_Returning,
+  Mining_Depositing,
   Walking
 }
 
@@ -547,6 +550,10 @@ class Unit extends Tile {
   currentPath:Point[] = [];
   speed:number = 4;
 
+  // Mining
+  miningResource:ResourceTile;
+  miningDeposit:TerrainTile;
+
   public constructor(x:number, y:number) {
     super("Unit");
 
@@ -559,8 +566,6 @@ class Unit extends Tile {
   }
 
   move(x:number, y:number) {
-    if (this.currentPath.length > 0) return; // TODO! click signal refactor.
-
     var here:Point = {x: (this.sprite.x / G.TILE_SIZE), y: (this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
@@ -569,6 +574,32 @@ class Unit extends Tile {
     });
 
     this.currentPath = path;
+
+    if (G.map.hasTileOfTypeAt(x, y, ResourceTile)) {
+      this.state = UnitState.Mining_Walking;
+
+      this.miningResource = G.map.getTileOfTypeAt(dest.x, dest.y, ResourceTile);
+      this.miningDeposit = G.map.getTileOfTypeAt(here.x, here.y, TerrainTile);
+
+      // Pop off the final step, which would have been on top of the resource.
+      this.currentPath.pop();
+    } else {
+      this.state = UnitState.Walking;
+    }
+  }
+
+  finishedWalkingStateTransition() {
+    switch (this.state) {
+      case UnitState.Mining_Walking:
+        this.state = UnitState.Mining_Gathering;
+        break;
+      case UnitState.Mining_Returning:
+        this.state = UnitState.Mining_Depositing;
+        break;
+      default:
+        this.state = UnitState.Idle;
+        break;
+    }
   }
 
   walk() {
@@ -582,7 +613,8 @@ class Unit extends Tile {
     }
 
     if (this.currentPath.length == 0) {
-      this.state = UnitState.Idle;
+      this.finishedWalkingStateTransition();
+
       return;
     }
 
@@ -590,16 +622,22 @@ class Unit extends Tile {
     this.sprite.y += this.speed * Phaser.Math.sign(nextDest.y - this.sprite.y);
   }
 
+  gather() {
+    console.log("gathering");
+  }
+
   update() {
     switch (this.state) {
       case UnitState.Idle:
-        if (this.currentPath.length !== 0) {
-          this.state = UnitState.Walking;
-        }
-
+        break;
+      case UnitState.Mining_Gathering:
+        this.gather();
         break;
       case UnitState.Walking:
+      case UnitState.Mining_Returning:
+      case UnitState.Mining_Walking:
         this.walk();
+        break;
     }
   }
 }
@@ -649,6 +687,10 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     }
 
     return undefined;
+  }
+
+  public hasTileOfTypeAt(x:number, y:number, tileType:any):boolean {
+    return this.getTileOfTypeAt(x, y, tileType) !== undefined;
   }
 
   public isEmpty(x:number, y:number):boolean {
