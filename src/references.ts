@@ -3,6 +3,7 @@
 /// <reference path="../d/underscore.d.ts" />
 /// <reference path="../d/jquery.d.ts" />
 
+/// <reference path="g.ts" />
 /// <reference path="point.ts" />
 /// <reference path="unitlayer.ts" />
 /// <reference path="buildings.ts" />
