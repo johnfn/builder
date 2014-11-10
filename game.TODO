@@ -13,9 +13,10 @@ Units:
      ✔ Path finding.  @done (14-11-08 16:01)
      ☐ But units ignore other units, except they dont end on top of them.
        ☐ This is harder when you consider 2 units can be moving simultaneously. Need to keep track of every units destination, and if you tell a unit to go somewhere someone else already has as a destination, find the nearest non-destined grid and go there instead.
-     ☐ If you click somewhere they can't go, they should make a best guess. Rather than crashing.
+       ☐ Meh, a better idea is that if a unit is about to move onto a square w/ a unit on it, for it to not continue to move, but to keep trying until it can get there.
+     ✔ If you click somewhere they can't go, they should make a best guess. Rather than crashing. @done (14-11-08 16:11)
      ☐ Make right click signal only on release
-   ☐ Units should be square-only, but walk between squares.
+   ✔ Units should be square-only, but walk between squares. @done (14-11-09 15:41)
    ☐ Then they can harvest resources..whoa
 
 Saving:

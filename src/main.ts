@@ -521,6 +521,7 @@ class UnitLayer extends Phaser.Group {
 
 enum UnitState {
   Idle,
+  Mining,
   Walking
 }
 
@@ -587,8 +588,6 @@ class Unit extends Tile {
 
     this.sprite.x += this.speed * Phaser.Math.sign(nextDest.x - this.sprite.x);
     this.sprite.y += this.speed * Phaser.Math.sign(nextDest.y - this.sprite.y);
-
-    console.log(this.sprite.x, this.sprite.y);
   }
 
   update() {
@@ -632,7 +631,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
 
     this.units = new UnitLayer();
 
-    G.game.input.onUp.add(this.mouseUp, this);
+    G.game.input.onDown.add(this.mouseDown, this);
 
     this.zbutton = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
     this.zbutton.onUp.add(() => this.pressZ());
@@ -716,26 +715,10 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     }
   }
 
-  public mouseUp() {
-    var mx = G.game.input.worldX;
-    var my = G.game.input.worldY;
-
-    var tile:Tile = this.layers[0].get(Math.floor(mx / G.TILE_SIZE), Math.floor(my / G.TILE_SIZE));
-
-    //G.bottomBar.model.setHeading('Terrain: ' + tile.getTileName());
-    //G.bottomBar.model.setActions(tile.getActions());
-  }
-
-  public update() {
-    var mxy = this.getXY();
-    var tile = this.getTopmostTileAt(mxy[0], mxy[1]);
-
-    if (tile != this.mousedOverTile) {
-      tile.mouseEnterSignal.dispatch();
-      if (this.mousedOverTile) this.mousedOverTile.mouseLeaveSignal.dispatch();
-
-      this.mousedOverTile = tile;
-    }
+  public mouseDown() {
+    var mx = Math.floor(G.game.input.worldX / G.TILE_SIZE);
+    var my = Math.floor(G.game.input.worldY / G.TILE_SIZE);
+    var tile = this.getTopmostTileAt(mx, my);
 
     if (G.game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
       if (tile != this.selectedTile) {
@@ -747,8 +730,22 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     }
 
     if (G.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
-      if (this.selectedTile) this.selectedTile.rightClickSignal.dispatch(mxy[0], mxy[1]);
+      if (this.selectedTile) this.selectedTile.rightClickSignal.dispatch(mx, my);
     }
+  }
+
+  public update() {
+    var mx = Math.floor(G.game.input.worldX / G.TILE_SIZE);
+    var my = Math.floor(G.game.input.worldY / G.TILE_SIZE);
+    var tile = this.getTopmostTileAt(mx, my);
+
+    if (tile != this.mousedOverTile) {
+      tile.mouseEnterSignal.dispatch();
+      if (this.mousedOverTile) this.mousedOverTile.mouseLeaveSignal.dispatch();
+
+      this.mousedOverTile = tile;
+    }
+
   }
 }
 
