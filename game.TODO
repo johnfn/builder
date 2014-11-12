@@ -22,6 +22,11 @@ Units:
    ☐ And return them at special buildings, but dont do that until I have builders.
    ☐ How come I can't reassign their destinations?
 
+Buildings:
+  ☐ Town Center
+  ☐ Dock with ships
+  ☐ Mining dropoff area (this is the main thing holding back mining right now...)
+
 Map generation:
   ☐ http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
   ☐ http://gamedev.stackexchange.com/questions/71709/how-can-i-generate-random-maps-that-feel-like-age-of-empires-ii-random-maps
@@ -40,9 +45,6 @@ MouseClickRefactor:
 
 Resources:
  ☐ Top tool bar.
-
-Buildings:
-  ☐ Town Center
 
 AIs:
  ☐ Should have basic towns that you can thrash

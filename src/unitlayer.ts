@@ -11,7 +11,7 @@ class UnitLayer extends Phaser.Group {
     this.units = [];
   }
 
-  public addUnit(from:Tile, type:number = 0) {
+  public addUnitFromBuilding(from:Tile, type:number = 0) {
     var x:number = from.sprite.x / G.TILE_SIZE;
     var y:number = from.sprite.y / G.TILE_SIZE;
 
@@ -34,10 +34,14 @@ class UnitLayer extends Phaser.Group {
       }
     }
 
-    var unit:Unit = new Unit(destination.x * G.TILE_SIZE, destination.y * G.TILE_SIZE);
+    this.addUnit(destination.x * G.TILE_SIZE, destination.y * G.TILE_SIZE, Builder);
+  }
+
+  // Directly add a unit
+  addUnit<T extends Unit>(x:number, y:number, unitClass:new (x:number, y:number) => T) {
+    var unit:T = new unitClass(x, y);
 
     this.add(unit.sprite);
-
     this.units.push(unit);
   }
 }

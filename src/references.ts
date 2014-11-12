@@ -12,5 +12,6 @@
 /// <reference path="resources.ts" />
 /// <reference path="tile.ts" />
 /// <reference path="unit.ts" />
+/// <reference path="builder.ts" />
 /// <reference path="gamemap.ts" />
 /// <reference path="terrain.ts" />

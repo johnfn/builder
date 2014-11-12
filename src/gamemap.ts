@@ -111,7 +111,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     if (this.selectedTile.getTileName() == "grass") {
       this.buildings.build([x, y]);
     } else if (this.selectedTile.getTileName() == "Town Center") {
-      this.units.addUnit(this.selectedTile);
+      this.units.addUnitFromBuilding(this.selectedTile);
     }
   }
 
