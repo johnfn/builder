@@ -85,15 +85,16 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
 
     for (var i = 0; i < G.delta4.length; i++) {
       var next:Point = {x: current.p.x + G.delta4[i].x, y: current.p.y + G.delta4[i].y};
-      var hash = p2s(next);
+      var nexthash = p2s(next);
+      var curhash = p2s(current.p);
 
       // TODO - may one way want to accomodate for different paths being faster.
       // the next line assumes that a newer path will never be faster than one we already found.
-      if (hash in backtrack) continue;
+      if (nexthash in backtrack && backtrack[nexthash].score <= backtrack[curhash].score + 1) continue;
       if (next.x < 0 || next.y < 0 || next.x >= G.MAP_SIZE || next.y >= G.MAP_SIZE) continue;
       if (!criteria(grid.get(next.x, next.y))) continue;
 
-      backtrack[hash] = {p: current.p, score: backtrack[p2s(current.p)].score + 1 };
+      backtrack[nexthash] = {p: current.p, score: backtrack[p2s(current.p)].score + 1 };
       closest.push({p: next, score: dist(next, dest)});
     }
 
