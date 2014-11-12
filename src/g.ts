@@ -74,8 +74,8 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
 
   var closestPoint:Point;
   var closest:PathfindNode[] = [{p:start, score:dist(start, dest)}];
-  var backtrack:{[key: string]: Point} = {};
-  backtrack[p2s(start)] = undefined;
+  var backtrack:{[key: string]: PathfindNode} = {};
+  backtrack[p2s(start)] = {p: undefined, score: 0};
 
   while (closest.length != 0) {
     var current:PathfindNode = closest.shift();
@@ -93,7 +93,7 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
       if (next.x < 0 || next.y < 0 || next.x >= G.MAP_SIZE || next.y >= G.MAP_SIZE) continue;
       if (!criteria(grid.get(next.x, next.y))) continue;
 
-      backtrack[hash] = current.p;
+      backtrack[hash] = {p: current.p, score: backtrack[p2s(current.p)].score + 1 };
       closest.push({p: next, score: dist(next, dest)});
     }
 
@@ -101,11 +101,11 @@ function pathfind<T>(start:Point, dest:Point, grid:Gettable<T>, criteria:(t:T) =
   }
 
   var result:Point[] = [closestPoint];
-  var currentBacktrack:Point = backtrack[p2s(closestPoint)];
+  var currentBacktrack:Point = backtrack[p2s(closestPoint)].p;
 
   while (currentBacktrack.x != start.x || currentBacktrack.y != start.y) {
     result.push(currentBacktrack);
-    currentBacktrack = backtrack[p2s(currentBacktrack)];
+    currentBacktrack = backtrack[p2s(currentBacktrack)].p;
   }
 
   return result;

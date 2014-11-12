@@ -73,8 +73,6 @@ class Builder extends Unit {
   }
 
   gather() {
-    console.log("gathering");
-
     this.miningInfo.timeLeftToMine--;
 
     if (this.miningInfo.timeLeftToMine <= 0) {
