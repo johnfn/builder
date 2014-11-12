@@ -22,6 +22,11 @@ Units:
    ☐ And return them at special buildings, but dont do that until I have builders.
    ☐ How come I can't reassign their destinations?
 
+Map generation:
+  ☐ http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
+  ☐ http://gamedev.stackexchange.com/questions/71709/how-can-i-generate-random-maps-that-feel-like-age-of-empires-ii-random-maps
+  ☐ http://www.redblobgames.com/ Omg this website...yes
+
 Saving:
  ☐ Meh...
 
@@ -47,6 +52,7 @@ Refactoring:
  ☐ Make buttons into templates...
 
 Bugs:
+ ☐ Pathfind, if yuo're already standing on the dest, dies.
   ☐ Clicks outside of the canvas still trigger click events.
  ☐ if hasAllFourTiles is false, the loop will add extra tiles to the screen.
 

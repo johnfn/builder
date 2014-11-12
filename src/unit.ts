@@ -25,6 +25,15 @@ class UnitSprite extends Phaser.Sprite {
   }
 }
 
+class MiningInfo {
+  miningResource:ResourceTile;
+  miningDeposit:TerrainTile;
+
+  resourcesCarried:number;
+  timeLeftToMine:number;
+  MAX_MINING_TIME:number = 100;
+}
+
 class Unit extends Tile {
   state:UnitState = UnitState.Idle;
 
@@ -32,8 +41,9 @@ class Unit extends Tile {
   speed:number = 4;
 
   // Mining
-  miningResource:ResourceTile;
   miningDeposit:TerrainTile;
+
+  miningInfo:MiningInfo = new MiningInfo();
 
   public constructor(x:number, y:number) {
     super("Unit");
@@ -46,8 +56,12 @@ class Unit extends Tile {
     unitSprite.updateSignal.add(() => this.update());
   }
 
-  move(x:number, y:number) {
-    var here:Point = {x: (this.sprite.x / G.TILE_SIZE), y: (this.sprite.y / G.TILE_SIZE)};
+  walkToTile(t:Tile) {
+    this.walkTo(Math.floor(t.sprite.x / G.TILE_SIZE), Math.floor(t.sprite.y / G.TILE_SIZE));
+  }
+
+  walkTo(x:number, y:number) {
+    var here:Point = {x: Math.floor(this.sprite.x / G.TILE_SIZE), y: Math.floor(this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
     var path:Point[] = pathfind(here, dest, G.map, function(t:Tile[]) {
@@ -55,12 +69,18 @@ class Unit extends Tile {
     });
 
     this.currentPath = path;
+  }
+
+  move(x:number, y:number) {
+    this.walkTo(x, y);
 
     if (G.map.hasTileOfTypeAt(x, y, ResourceTile)) {
       this.state = UnitState.Mining_Walking;
 
-      this.miningResource = G.map.getTileOfTypeAt(dest.x, dest.y, ResourceTile);
-      this.miningDeposit = G.map.getTileOfTypeAt(here.x, here.y, TerrainTile);
+      this.miningInfo.miningResource = G.map.getTileOfTypeAt(x, y, ResourceTile);
+
+      //TODO: broken
+      this.miningInfo.miningDeposit = G.map.getTileOfTypeAt(Math.floor(this.sprite.x / G.TILE_SIZE), Math.floor(this.sprite.x / G.TILE_SIZE), TerrainTile);
 
       // Pop off the final step, which would have been on top of the resource.
       this.currentPath.pop();
@@ -73,6 +93,7 @@ class Unit extends Tile {
     switch (this.state) {
       case UnitState.Mining_Walking:
         this.state = UnitState.Mining_Gathering;
+        this.miningInfo.timeLeftToMine = this.miningInfo.MAX_MINING_TIME;
         break;
       case UnitState.Mining_Returning:
         this.state = UnitState.Mining_Depositing;
@@ -105,6 +126,14 @@ class Unit extends Tile {
 
   gather() {
     console.log("gathering");
+
+    this.miningInfo.timeLeftToMine--;
+
+    if (this.miningInfo.timeLeftToMine <= 0) {
+      this.state = UnitState.Mining_Returning;
+
+      this.walkToTile(this.miningInfo.miningDeposit);
+    }
   }
 
   update() {
