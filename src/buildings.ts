@@ -3,6 +3,12 @@
 class TownCenter extends Tile {
   constructor() {
     super("Town Center");
+
+    this.pressZSignal.add(() => this.addUnit());
+  }
+
+  addUnit() {
+    G.map.units.addUnitFromBuilding(this);
   }
 }
 

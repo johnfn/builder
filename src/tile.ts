@@ -13,6 +13,8 @@ class Tile implements Interactable {
   public mouseEnterSignal:Phaser.Signal = new Phaser.Signal();
   public mouseLeaveSignal:Phaser.Signal = new Phaser.Signal();
 
+  public pressZSignal:Phaser.Signal = new Phaser.Signal();
+
   clicked:boolean = false;
   hoveredOver:boolean = false;
 
