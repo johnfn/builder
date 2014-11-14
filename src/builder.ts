@@ -17,6 +17,12 @@ class Builder extends Unit {
     super(x, y);
 
     this.rightClickSignal.add((x:number, y:number) => this.move(x, y));
+
+    this.pressZSignal.add(() => this.pressZ());
+  }
+
+  pressZ() {
+    G.map.setBuildingBeingBuilt(MiningDeposit);
   }
 
   move(x:number, y:number) {

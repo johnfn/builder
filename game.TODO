@@ -2,7 +2,7 @@ Notes to self -
   - build buildings by click on tile and pressing Z
 
 Units:
- ☐ Builder.
+ ☐ Builder. (just an extension of gatherer)
  ☐ Gatherer.
    ✔ Then when I press Z, it makes a unit. @done (14-11-05 20:49)
      ✔ I need to have a separate layer type for units @done (14-11-05 20:49)

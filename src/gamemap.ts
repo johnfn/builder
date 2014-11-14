@@ -14,6 +14,8 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
   mousedOverTile:Tile;
   selectedTile:Tile;
 
+  buildingBeingBuilt:typeof Tile;
+
   public constructor() {
     super(G.game);
 
@@ -31,6 +33,10 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
 
     this.zbutton = G.game.input.keyboard.addKey(Phaser.Keyboard.Z);
     this.zbutton.onUp.add(() => this.pressZ());
+  }
+
+  public setBuildingBeingBuilt(tileType:typeof Tile) {
+    this.buildingBeingBuilt = tileType;
   }
 
   // TODO I'm sure there's a better way to type this...
@@ -61,6 +67,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     return results[0];
   }
 
+  // get all the tiles at a specific coordinate.
   public get(x:number, y:number):Tile[] {
     var result:Tile[] = [];
 
@@ -82,7 +89,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
       }
     }
 
-    // Will likely never happen.
+    // Will likely never happen. //TODO what am i talking about... lol
     return result;
 
   }

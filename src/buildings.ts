@@ -12,6 +12,12 @@ class TownCenter extends Tile {
   }
 }
 
+class MiningDeposit extends Tile {
+  constructor() {
+    super("Mining Deposit");
+  }
+}
+
 class Buildings extends Grid {
   space: Phaser.Key;
 
