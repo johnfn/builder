@@ -12,6 +12,7 @@ class G {
   static map:GameMap;
   static game:Phaser.Game;
   static bottomBar:BottomBar;
+  static resourceBar:ResourceBar;
 }
 
 interface Gettable<T> {

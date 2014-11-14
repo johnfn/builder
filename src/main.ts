@@ -31,6 +31,13 @@ class Minimap {
 }
 */
 
+class ResourceBar {
+  public ore:number = 0;
+  public trees:number = 0;
+  public marsh:number = 0;
+  public fish:number = 0;
+}
+
 class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
   cursors: Phaser.CursorKeys;
@@ -46,6 +53,8 @@ class MainState extends Phaser.State {
   }
 
   public init():void {
+    G.resourceBar = new ResourceBar();
+
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.game.world.setBounds(0, 0, G.MAP_SIZE * 32, G.MAP_SIZE * 32);
 

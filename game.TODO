@@ -18,7 +18,7 @@ Units:
      ✔ If you click somewhere they can't go, they should make a best guess. Rather than crashing. @done (14-11-08 16:11)
      ✔ Make right click signal only on release @done (14-11-09 16:42)
    ✔ Units should be square-only, but walk between squares. @done (14-11-09 15:41)
-   ☐ make it so that only clicking on tc builds unit
+   ✔ make it so that only clicking on tc builds unit @done (14-11-13 23:48)
    ☐ add new building
    ☐ Then they can harvest resources..whoa
    ☐ And return them at special buildings, but dont do that until I have builders.
