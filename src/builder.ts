@@ -35,8 +35,6 @@ class Builder extends Unit {
 
       // Pop off the final step, which is where the building will be built.
       this.currentPathQueue.shift();
-
-      this.buildingBeingBuilt = undefined;
     }
   }
 
@@ -65,9 +63,10 @@ class Builder extends Unit {
         this.miningInfo.timeLeftToMine = this.miningInfo.MAX_MINING_TIME;
         break;
       case UnitState.Building_Walking:
-        this.state = UnitState.Idle;
-
         G.map.buildings.build(this.buildingDestination.sprite.x / G.TILE_SIZE, this.buildingDestination.sprite.y / G.TILE_SIZE, this.buildingBeingBuilt);
+
+        this.state = UnitState.Idle;
+        this.buildingBeingBuilt = undefined;
         break;
       case UnitState.Mining_Returning:
         this.state = UnitState.Mining_Depositing;
