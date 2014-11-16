@@ -97,7 +97,7 @@ class Game {
 
   constructor() {
     this.state = new MainState();
-    G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, "main", this.state);
+    G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, document.getElementById("main"), this.state);
 
     G.bottomBar = new BottomBar();
   }
