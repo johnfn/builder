@@ -31,11 +31,18 @@ class Minimap {
 }
 */
 
-class ResourceBar {
-  public ore:number = 0;
-  public trees:number = 0;
-  public marsh:number = 0;
-  public fish:number = 0;
+class ResourceBarModel extends Backbone.Model {
+  set ore(ore:number) { this.set('ore', ore); }
+  get ore():number { return this.get('ore'); }
+
+  set trees(trees:number) { this.set('trees', trees); }
+  get trees():number { return this.get('trees'); }
+
+  set marsh(marsh:number) { this.set('marsh', marsh); }
+  get marsh():number { return this.get('marsh'); }
+
+  set fish(fish:number) { this.set('fish', fish); }
+  get fish():number { return this.get('fish'); }
 }
 
 class MainState extends Phaser.State {
@@ -53,7 +60,7 @@ class MainState extends Phaser.State {
   }
 
   public init():void {
-    G.resourceBar = new ResourceBar();
+    G.resourceBarModel = new ResourceBarModel();
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.game.world.setBounds(0, 0, G.MAP_SIZE * 32, G.MAP_SIZE * 32);
