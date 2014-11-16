@@ -77,8 +77,16 @@ class Unit extends Tile {
     var here:Point = {x: Math.floor(this.sprite.x / G.TILE_SIZE), y: Math.floor(this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
-    return pathfind(here, dest, G.map, function(t:Tile[]) {
-      return _.chain(t).pluck("tileName").contains("grass").value();
+    return pathfind(here, dest, G.map, function(t:Tile[]):boolean {
+      if (!_.chain(t).pluck("tileName").contains("grass").value()) {
+        return false;
+      }
+
+      for (var i = 0; i < t.length; i++) {
+        if (t[i] instanceof Building) return false;
+      }
+
+      return true;
     });
   }
 

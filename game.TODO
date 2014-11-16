@@ -23,10 +23,10 @@ Units:
    ✔ add new building @done (14-11-15 19:04)
    ✔ Then they can harvest resources..whoa @done (14-11-15 20:03)
    ✔ And return them at special buildings, but dont do that until I have builders. @done (14-11-15 21:52)
-   ☐ You shouldn't b able to walk through buildings...
+   ✔ You shouldn't b able to walk through buildings... @done (14-11-15 23:33)
    ☐ How come I can't reassign their destinations?
-   ☐ walkToTile and walkOnTile
-   ☐ lil +5 floating up when you harvest a resource (deposit())
+   ✔ walkToTile and walkOnTile @done (14-11-15 23:29)
+   ✔ lil +5 floating up when you harvest a resource (deposit()) @done (14-11-15 23:29)
    ☐ destroy trees (trees should have limited count of resources)
 
 Buildings:
