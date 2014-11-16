@@ -36,14 +36,27 @@ class Builder extends Unit {
       // Pop off the final step, which is where the building will be built.
       this.currentPathQueue.shift();
     }
+
+    var md:MiningDeposit =  this.findNearestMiningDeposit();
   }
 
   findNearestMiningDeposit():MiningDeposit {
     var deposits:MiningDeposit[] = G.map.getAllTilesOfType(MiningDeposit);
+    var self:Builder = this;
 
-    console.log(deposits);
+    var closest:number = Number.POSITIVE_INFINITY;
+    var candidate:MiningDeposit = undefined;
 
-    return undefined;
+    _.each(deposits, function(deposit:MiningDeposit) {
+      var distance = self.pathToTile(deposit).length;
+
+      if (distance < closest) {
+        closest = distance;
+        candidate = deposit;
+      }
+    });
+
+    return candidate;
   }
 
   move(x:number, y:number) {

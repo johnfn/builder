@@ -52,10 +52,18 @@ class Unit extends Tile {
   }
 
   walkTo(x:number, y:number) {
+    this.currentPathQueue = this.pathTo(x, y);
+  }
+
+  pathToTile(t:Tile) {
+    return this.pathTo(Math.floor(t.sprite.x / G.TILE_SIZE), Math.floor(t.sprite.y / G.TILE_SIZE));
+  }
+
+  pathTo(x:number, y:number):Point[] {
     var here:Point = {x: Math.floor(this.sprite.x / G.TILE_SIZE), y: Math.floor(this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
-    this.currentPathQueue = pathfind(here, dest, G.map, function(t:Tile[]) {
+    return pathfind(here, dest, G.map, function(t:Tile[]) {
       return _.chain(t).pluck("tileName").contains("grass").value();
     });
   }
