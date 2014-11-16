@@ -15,7 +15,6 @@ class Terrain extends Grid {
       for (var j = 0; j < G.MAP_SIZE; j++) {
         var x:number = i * G.TILE_SIZE;
         var y:number = j * G.TILE_SIZE;
-
         var tile:TerrainTile = new TerrainTile();
 
         tile.tileName = TerrainTile.types[data[i][j]];

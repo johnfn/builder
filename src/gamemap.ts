@@ -45,8 +45,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
         var tile = this.getTileOfTypeAt(i, j, tileType);
 
         if (tile !== undefined) {
-          // The cast is so irritating, but I can't fix getTilesOfTypeAt
-          result.push(<T> tile);
+          result.push(tile);
         }
       }
     }
