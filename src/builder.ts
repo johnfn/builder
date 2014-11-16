@@ -41,22 +41,17 @@ class Builder extends Unit {
   }
 
   findNearestMiningDeposit():MiningDeposit {
-    var deposits:MiningDeposit[] = G.map.getAllTilesOfType(MiningDeposit);
     var self:Builder = this;
 
-    var closest:number = Number.POSITIVE_INFINITY;
-    var candidate:MiningDeposit = undefined;
+    var deposits = _.sortBy(G.map.getAllTilesOfType(MiningDeposit), (deposit:MiningDeposit) => {
+      deposit.sprite.alpha = 1;
 
-    _.each(deposits, function(deposit:MiningDeposit) {
-      var distance = self.pathToTile(deposit).length;
-
-      if (distance < closest) {
-        closest = distance;
-        candidate = deposit;
-      }
+      return self.pathToTile(deposit).length;
     });
 
-    return candidate;
+    deposits[0].sprite.alpha = 0.2;
+
+    return deposits[0];
   }
 
   move(x:number, y:number) {
