@@ -12,7 +12,9 @@ class MiningInfo {
 
 class Builder extends Unit {
   miningInfo:MiningInfo = new MiningInfo();
+
   buildingBeingBuilt:typeof Building = undefined;
+  buildingDestination:Tile = undefined;
 
   constructor(x:number, y:number) {
     super(x, y);
@@ -26,9 +28,13 @@ class Builder extends Unit {
     if (this.buildingBeingBuilt == undefined) {
       this.buildingBeingBuilt = MiningDeposit;
     } else {
-      var loc:Tile = G.map.getMousedOverTile();
+      this.buildingDestination = G.map.getMousedOverTile();
 
-      G.map.buildings.build(loc.sprite.x / G.TILE_SIZE, loc.sprite.y / G.TILE_SIZE, this.buildingBeingBuilt);
+      this.state = UnitState.Building_Walking;
+      this.walkToTile(this.buildingDestination);
+
+      // Pop off the final step, which is where the building will be built.
+      this.currentPath.pop();
     }
   }
 
@@ -55,6 +61,11 @@ class Builder extends Unit {
       case UnitState.Mining_Walking:
         this.state = UnitState.Mining_Gathering;
         this.miningInfo.timeLeftToMine = this.miningInfo.MAX_MINING_TIME;
+        break;
+      case UnitState.Building_Walking:
+        this.state = UnitState.Idle;
+
+        G.map.buildings.build(this.buildingDestination.sprite.x / G.TILE_SIZE, this.buildingDestination.sprite.y / G.TILE_SIZE, this.buildingBeingBuilt);
         break;
       case UnitState.Mining_Returning:
         this.state = UnitState.Mining_Depositing;
@@ -105,6 +116,7 @@ class Builder extends Unit {
       case UnitState.Walking:
       case UnitState.Mining_Returning:
       case UnitState.Mining_Walking:
+      case UnitState.Building_Walking:
         this.walkStep();
         break;
     }

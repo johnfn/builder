@@ -6,7 +6,8 @@ enum UnitState {
   Mining_Gathering,
   Mining_Returning,
   Mining_Depositing,
-  Walking
+  Walking,
+  Building_Walking
 }
 
 // Really the only reason this exists is so I can override update, but eh.
@@ -49,11 +50,9 @@ class Unit extends Tile {
     var here:Point = {x: Math.floor(this.sprite.x / G.TILE_SIZE), y: Math.floor(this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
-    var path:Point[] = pathfind(here, dest, G.map, function(t:Tile[]) {
+    this.currentPath = pathfind(here, dest, G.map, function(t:Tile[]) {
       return _.chain(t).pluck("tileName").contains("grass").value();
     });
-
-    this.currentPath = path;
   }
 
   public update() {

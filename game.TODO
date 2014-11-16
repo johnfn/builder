@@ -33,6 +33,7 @@ Buildings:
     ✔ Now I just want to see the name of the building down on the bottom... @done (14-11-15 19:09)
     ✔ BottomBar.model.set('heading', whatever) after a selection event is triggered. @done (14-11-15 19:09)
     ☐ Should walk to the building to build it
+      ☐ Need new states
     ☐ Use different sprite
   ☐ Town Center
   ☐ Dock with ships
