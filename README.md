@@ -9,4 +9,4 @@ how2setup:
 how2run:
 
     python -m SimpleHTTPServer
-    tsc -w src/*.ts --out src/main.js
+    tsc -w src/*.ts --out src/main.js --target ES5
