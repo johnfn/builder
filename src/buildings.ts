@@ -3,6 +3,12 @@
 class Building extends Tile {
   constructor() {
     super("");
+
+    this.clickSignal.add(() => this.updateBottomBar());
+  }
+
+  public updateBottomBar() {
+    G.bottomBar.model.setHeading(this.tileName);
   }
 
   public build() {

@@ -19,7 +19,7 @@ Units:
      ✔ Make right click signal only on release @done (14-11-09 16:42)
    ✔ Units should be square-only, but walk between squares. @done (14-11-09 15:41)
    ✔ make it so that only clicking on tc builds unit @done (14-11-13 23:48)
-   ☐ add new building
+   ✔ add new building @done (14-11-15 19:04)
    ☐ Then they can harvest resources..whoa
    ☐ And return them at special buildings, but dont do that until I have builders.
    ☐ How come I can't reassign their destinations?
@@ -30,10 +30,16 @@ Buildings:
     ✔ Then, query Buildings grid and tell it to add a new building @done (14-11-15 19:02)
     ✔ It needs to be passed in a building type. @done (14-11-15 19:02)
     ✔ also xy[] is bad, should be a Point or something. @done (14-11-15 19:04)
-    ☐ Maybe Tile should have #point
-    ☐ Constantly going back and forth between x rel and abs is irritating. Should be rel by default. no one cares about abs except drawing methods
+    ✔ Now I just want to see the name of the building down on the bottom... @done (14-11-15 19:09)
+    ✔ BottomBar.model.set('heading', whatever) after a selection event is triggered. @done (14-11-15 19:09)
+    ☐ Should walk to the building to build it
+    ☐ Use different sprite
   ☐ Town Center
   ☐ Dock with ships
+
+Thoughts:
+  ☐ Maybe Tile should have #point
+  ☐ Constantly going back and forth between x rel and abs is irritating. Should be rel by default. no one cares about abs except drawing methods
 
 Map generation:
   ☐ http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/
