@@ -2,12 +2,11 @@
 
 class MiningInfo {
   miningResource:ResourceTile;
-  miningDeposit:MiningDeposit;
 
   resourcesCarried:number;
   timeLeftToMine:number;
 
-  MAX_MINING_TIME:number = 100;
+  MAX_MINING_TIME:number = 10;
 }
 
 class Builder extends Unit {
@@ -120,13 +119,16 @@ class Builder extends Unit {
     this.miningInfo.timeLeftToMine--;
 
     if (this.miningInfo.timeLeftToMine <= 0) {
-      if (this.miningInfo.miningDeposit == undefined) {
+      var miningDepositDestination:MiningDeposit = this.findNearestMiningDeposit();
+
+      if (miningDepositDestination == undefined) {
         this.state = UnitState.Idle;
+
+        console.error("No mining deposit");
 
         return;
       }
 
-      var miningDepositDestination:MiningDeposit = this.findNearestMiningDeposit();
       this.walkToTile(miningDepositDestination);
       this.currentPathQueue.shift();
 

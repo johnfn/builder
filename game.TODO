@@ -83,8 +83,8 @@ Refactoring:
 
 Bugs:
  ☐ Pathfind, if yuo're already standing on the dest, dies.
-  ☐ Clicks outside of the canvas still trigger click events.
  ☐ if hasAllFourTiles is false, the loop will add extra tiles to the screen.
+ ☐ Clicks outside of the canvas still trigger click events.
 
 
    ☐ Make repo private...
