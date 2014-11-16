@@ -2,8 +2,7 @@ Notes to self -
   - build buildings by click on tile and pressing Z
 
 Units:
- ☐ Builder. (just an extension of gatherer)
- ☐ Gatherer.
+ ☐ Builder/Gatherer.
    ✔ Then when I press Z, it makes a unit. @done (14-11-05 20:49)
      ✔ I need to have a separate layer type for units @done (14-11-05 20:49)
      ✔ I need to make a unit sprite. @done (14-11-05 20:49)
@@ -41,6 +40,10 @@ Buildings:
 Thoughts:
   ☐ Maybe Tile should have #point
   ☐ Constantly going back and forth between x rel and abs is irritating. Should be rel by default. no one cares about abs except drawing methods
+
+UI:
+ ☐ Need some sort of 'which building to build' UI.
+ ☐ When building a building, the selection should become a transparent building of the type you selected
 
 Map generation:
   ☐ http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/

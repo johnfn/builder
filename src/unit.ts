@@ -30,7 +30,7 @@ class UnitSprite extends Phaser.Sprite {
 class Unit extends Tile {
   state:UnitState = UnitState.Idle;
 
-  currentPath:Point[] = [];
+  currentPathQueue:Point[] = [];
   speed:number = 4;
 
   public constructor(x:number, y:number) {
@@ -50,7 +50,7 @@ class Unit extends Tile {
     var here:Point = {x: Math.floor(this.sprite.x / G.TILE_SIZE), y: Math.floor(this.sprite.y / G.TILE_SIZE)};
     var dest:Point = {x: x, y: y};
 
-    this.currentPath = pathfind(here, dest, G.map, function(t:Tile[]) {
+    this.currentPathQueue = pathfind(here, dest, G.map, function(t:Tile[]) {
       return _.chain(t).pluck("tileName").contains("grass").value();
     });
   }

@@ -34,7 +34,9 @@ class Builder extends Unit {
       this.walkToTile(this.buildingDestination);
 
       // Pop off the final step, which is where the building will be built.
-      this.currentPath.pop();
+      this.currentPathQueue.shift();
+
+      this.buildingBeingBuilt = undefined;
     }
   }
 
@@ -50,7 +52,7 @@ class Builder extends Unit {
       this.miningInfo.miningDeposit = G.map.getTileOfTypeAt(Math.floor(this.sprite.x / G.TILE_SIZE), Math.floor(this.sprite.x / G.TILE_SIZE), TerrainTile);
 
       // Pop off the final step, which would have been on top of the resource.
-      this.currentPath.pop();
+      this.currentPathQueue.shift();
     } else {
       this.state = UnitState.Walking;
     }
@@ -77,16 +79,17 @@ class Builder extends Unit {
   }
 
   walkStep() {
-    var p:Point = this.currentPath[this.currentPath.length - 1];
-    var nextDest:Point = {x: p.x, y: p.y}; // clone
+    var p:Point = _.last(this.currentPathQueue);
+    var nextDest:Point = _.clone(p);
+
     nextDest.x *= G.TILE_SIZE;
     nextDest.y *= G.TILE_SIZE;
 
     if (this.sprite.x == nextDest.x && this.sprite.y == nextDest.y) {
-      this.currentPath.pop();
+      this.currentPathQueue.pop();
     }
 
-    if (this.currentPath.length == 0) {
+    if (this.currentPathQueue.length == 0) {
       this.finishedWalkingStateTransition();
 
       return;
