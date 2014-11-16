@@ -33,13 +33,18 @@ class Unit extends Tile {
   currentPathQueue:Point[] = [];
   speed:number = 4;
 
-  public constructor(x:number, y:number) {
-    super("Unit");
+  public constructor() {
+    super();
 
-    var unitSprite:UnitSprite = new UnitSprite(x, y);
+    var unitSprite:UnitSprite = new UnitSprite(0, 0);
     this.sprite = unitSprite;
 
     unitSprite.updateSignal.add(() => this.update());
+  }
+
+  public setLocation(x:number, y:number) {
+    this.sprite.x = x;
+    this.sprite.y = y;
   }
 
   walkToTile(t:Tile) {

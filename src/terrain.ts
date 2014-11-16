@@ -16,7 +16,9 @@ class Terrain extends Grid {
         var x:number = i * G.TILE_SIZE;
         var y:number = j * G.TILE_SIZE;
 
-        this.data[i][j] = new TerrainTile(data[i][j]);
+        var tile:TerrainTile = new TerrainTile();
+        tile.tileName = TerrainTile.types[data[i][j]];
+
         this.data[i][j].sprite = G.game.add.sprite(x, y, "tiles", data[i][j]);
       }
     }

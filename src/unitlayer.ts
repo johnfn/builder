@@ -39,7 +39,8 @@ class UnitLayer extends Phaser.Group {
 
   // Directly add a unit
   addUnit(x:number, y:number, unitClass:typeof Unit) {
-    var unit:Unit = new unitClass(x, y);
+    var unit:Unit = new unitClass();
+    unit.setLocation(x, y);
 
     this.add(unit.sprite);
     this.units.push(unit);

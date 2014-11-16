@@ -37,9 +37,27 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     return this.mousedOverTile;
   }
 
+  public getAllTilesOfType<T extends Tile>(tileType: typeof Tile):T[] {
+    var result:T[] = []
+
+    for (var i = 0; i < G.MAP_SIZE; i++) {
+      for (var j = 0; j < G.MAP_SIZE; j++) {
+        var tile = this.getTileOfTypeAt(i, j, tileType);
+
+        if (tile !== undefined) {
+          // The cast is so irritating, but I can't fix getTilesOfTypeAt
+          result.push(<T> tile);
+        }
+      }
+    }
+
+    return result;
+  }
+
   // TODO I'm sure there's a better way to type this...
   // (esp bc tileType has to be a Tile subclass. fun)
-  public getTileOfTypeAt(x:number, y:number, tileType:any) {
+  // TODO THIS MAKES NO SENSE WHY CANT IT BE typeof Tile ALKDJFHLKJHL
+  public getTileOfTypeAt(x:number, y:number, tileType:typeof Tile) {
     var tiles:Tile[] = this.get(x, y);
 
     for (var i = 0; i < tiles.length; i++) {

@@ -2,7 +2,7 @@
 
 class MiningInfo {
   miningResource:ResourceTile;
-  miningDeposit:TerrainTile;
+  miningDeposit:MiningDeposit;
 
   resourcesCarried:number;
   timeLeftToMine:number;
@@ -16,8 +16,8 @@ class Builder extends Unit {
   buildingBeingBuilt:typeof Building = undefined;
   buildingDestination:Tile = undefined;
 
-  constructor(x:number, y:number) {
-    super(x, y);
+  constructor() {
+    super();
 
     this.rightClickSignal.add((x:number, y:number) => this.move(x, y));
 
@@ -38,6 +38,14 @@ class Builder extends Unit {
     }
   }
 
+  findNearestMiningDeposit():MiningDeposit {
+    var deposits:MiningDeposit[] = G.map.getAllTilesOfType(MiningDeposit);
+
+    console.log(deposits);
+
+    return undefined;
+  }
+
   move(x:number, y:number) {
     this.walkTo(x, y);
 
@@ -47,7 +55,8 @@ class Builder extends Unit {
       this.miningInfo.miningResource = G.map.getTileOfTypeAt(x, y, ResourceTile);
 
       //TODO: broken
-      this.miningInfo.miningDeposit = G.map.getTileOfTypeAt(Math.floor(this.sprite.x / G.TILE_SIZE), Math.floor(this.sprite.x / G.TILE_SIZE), TerrainTile);
+      this.miningInfo.miningDeposit = this.findNearestMiningDeposit();
+      //G.map.getTileOfTypeAt(Math.floor(this.sprite.x / G.TILE_SIZE), Math.floor(this.sprite.x / G.TILE_SIZE), TerrainTile);
 
       // Pop off the final step, which would have been on top of the resource.
       this.currentPathQueue.shift();
@@ -102,6 +111,12 @@ class Builder extends Unit {
     this.miningInfo.timeLeftToMine--;
 
     if (this.miningInfo.timeLeftToMine <= 0) {
+      if (this.miningInfo.miningDeposit == undefined) {
+        this.state = UnitState.Idle;
+
+        return;
+      }
+
       this.walkToTile(this.miningInfo.miningDeposit);
 
       this.state = UnitState.Mining_Returning;

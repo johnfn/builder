@@ -5,8 +5,8 @@ class Building extends Tile {
   // the x and y coordinates here are really just to satisfy the type-checker.
   // the base class has no need for them, but all the subclasses need them
   // since they instantiate the sprite.
-  constructor(x:number, y:number) {
-    super("");
+  constructor() {
+    super();
 
     this.clickSignal.add(() => this.updateBottomBar());
   }
@@ -21,13 +21,12 @@ class Building extends Tile {
 }
 
 class TownCenter extends Building {
-  constructor(x:number, y:number) {
-    super(x, y);
+  constructor() {
+    super();
 
     this.tileName = "Town Center";
-
     this.pressZSignal.add(() => this.addUnit());
-    this.sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
+    this.sprite = G.game.add.sprite(0, 0, "buildings", 0);
   }
 
   addUnit() {
@@ -36,11 +35,11 @@ class TownCenter extends Building {
 }
 
 class MiningDeposit extends Building {
-  constructor(x:number, y:number) {
-    super(x, y);
+  constructor() {
+    super();
 
     this.tileName = "Mining Deposit";
-    this.sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 1);
+    this.sprite = G.game.add.sprite(0, 0, "buildings", 1);
   }
 }
 
@@ -52,6 +51,9 @@ class Buildings extends Grid {
   }
 
   public build = (x:number, y:number, tileType:typeof Building) => {
-    this.data[x][y] = new tileType(x, y);
+    var building:Building = new tileType();
+    building.setLocation(x, y);
+
+    this.data[x][y] = building;
   }
 }

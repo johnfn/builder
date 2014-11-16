@@ -18,9 +18,7 @@ class Tile implements Interactable {
   clicked:boolean = false;
   hoveredOver:boolean = false;
 
-  constructor(tileName:string) {
-    this.tileName = tileName;
-
+  constructor() {
     this.sprite = undefined;
 
     this.clickSignal.add(this.click);
@@ -28,6 +26,11 @@ class Tile implements Interactable {
 
     this.mouseEnterSignal.add(this.hover);
     this.mouseLeaveSignal.add(this.unhover);
+  }
+
+  setLocation(x:number, y:number) {
+    this.sprite.x = G.TILE_SIZE * x;
+    this.sprite.y = G.TILE_SIZE * y;
   }
 
   getTileName = ():string => {
@@ -74,16 +77,8 @@ class Tile implements Interactable {
 
 class TerrainTile extends Tile {
   static types:string[] = [ "dirt", "grass", "sand", "water"];
-
-  constructor(value:number) {
-    super(TerrainTile.types[value]);
-  }
 }
 
 class ResourceTile extends Tile {
   static types:string[] = ["ore", "trees", "marsh", "fish"];
-
-  public constructor(value:number) {
-    super(ResourceTile.types[value]);
-  }
 }
