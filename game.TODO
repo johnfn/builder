@@ -50,6 +50,7 @@ Thoughts:
   ☐ When units can't find any mining deposit - give better information, maybe some sort of flash warning or sth
   ☐ Investigate why I cant do bleh<T>(param: typeof T):T[]
   ☐ upgrades hehe
+  ☐ t3s error thing is a little broken
 
 UI:
  ☐ Need some sort of 'which building to build' UI.

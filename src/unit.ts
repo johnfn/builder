@@ -47,12 +47,26 @@ class Unit extends Tile {
     this.sprite.y = y;
   }
 
+  // Walk to tile and stand on it.
+  walkOn(x:number, y:number) {
+    this.currentPathQueue = this.pathTo(x, y);
+  }
+
+  walkOnTile(t:Tile) {
+    this.walkOn(Math.floor(t.sprite.x / G.TILE_SIZE), Math.floor(t.sprite.y / G.TILE_SIZE));
+  }
+
+  // Walk to tile, but don't stand on it.
   walkToTile(t:Tile) {
-    this.walkTo(Math.floor(t.sprite.x / G.TILE_SIZE), Math.floor(t.sprite.y / G.TILE_SIZE));
+    this.walkOnTile(t);
+
+    this.currentPathQueue.shift();
   }
 
   walkTo(x:number, y:number) {
-    this.currentPathQueue = this.pathTo(x, y);
+    this.walkOn(x, y);
+
+    this.currentPathQueue.shift();
   }
 
   pathToTile(t:Tile) {
