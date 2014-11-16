@@ -37,7 +37,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     return this.mousedOverTile;
   }
 
-  public getAllTilesOfType<T extends Tile>(tileType: typeof Tile):T[] {
+  public getAllTilesOfType<T extends Tile>(tileType: {new(): T;} ):T[] {
     var result:T[] = []
 
     for (var i = 0; i < G.MAP_SIZE; i++) {
@@ -57,12 +57,12 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
   // TODO I'm sure there's a better way to type this...
   // (esp bc tileType has to be a Tile subclass. fun)
   // TODO THIS MAKES NO SENSE WHY CANT IT BE typeof Tile ALKDJFHLKJHL
-  public getTileOfTypeAt(x:number, y:number, tileType:typeof Tile) {
+  public getTileOfTypeAt<T extends Tile>(x:number, y:number, tileType: {new(): T;}):T {
     var tiles:Tile[] = this.get(x, y);
 
     for (var i = 0; i < tiles.length; i++) {
       if (tiles[i] instanceof tileType) {
-        return tiles[i];
+        return <T> tiles[i];
       }
     }
 
