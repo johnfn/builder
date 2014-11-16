@@ -12,6 +12,7 @@ class MiningInfo {
 
 class Builder extends Unit {
   miningInfo:MiningInfo = new MiningInfo();
+  buildingBeingBuilt:typeof Building = undefined;
 
   constructor(x:number, y:number) {
     super(x, y);
@@ -22,7 +23,13 @@ class Builder extends Unit {
   }
 
   pressZ() {
-    G.map.setBuildingBeingBuilt(MiningDeposit);
+    if (this.buildingBeingBuilt == undefined) {
+      this.buildingBeingBuilt = MiningDeposit;
+    } else {
+      var loc:Tile = G.map.getMousedOverTile();
+
+      G.map.buildings.build([loc.sprite.x / G.TILE_SIZE, loc.sprite.y / G.TILE_SIZE], this.buildingBeingBuilt);
+    }
   }
 
   move(x:number, y:number) {
