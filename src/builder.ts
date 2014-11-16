@@ -36,20 +36,15 @@ class Builder extends Unit {
       // Pop off the final step, which is where the building will be built.
       this.currentPathQueue.shift();
     }
-
-    var md:MiningDeposit =  this.findNearestMiningDeposit();
   }
 
   findNearestMiningDeposit():MiningDeposit {
     var self:Builder = this;
 
-    var deposits = _.sortBy(G.map.getAllTilesOfType(MiningDeposit), (deposit:MiningDeposit) => {
-      deposit.sprite.alpha = 1;
-
+    var allDeposits:MiningDeposit[] = G.map.getAllTilesOfType(MiningDeposit);
+    var deposits = _.sortBy(allDeposits, (deposit:MiningDeposit) => {
       return self.pathToTile(deposit).length;
     });
-
-    deposits[0].sprite.alpha = 0.2;
 
     return deposits[0];
   }
@@ -61,10 +56,6 @@ class Builder extends Unit {
       this.state = UnitState.Mining_Walking;
 
       this.miningInfo.miningResource = G.map.getTileOfTypeAt(x, y, ResourceTile);
-
-      //TODO: broken
-      this.miningInfo.miningDeposit = this.findNearestMiningDeposit();
-      //G.map.getTileOfTypeAt(Math.floor(this.sprite.x / G.TILE_SIZE), Math.floor(this.sprite.x / G.TILE_SIZE), TerrainTile);
 
       // Pop off the final step, which would have been on top of the resource.
       this.currentPathQueue.shift();
@@ -115,6 +106,16 @@ class Builder extends Unit {
     this.sprite.y += this.speed * Phaser.Math.sign(nextDest.y - this.sprite.y);
   }
 
+  deposit() {
+    // do something cool
+
+    this.walkToTile(this.miningInfo.miningResource);
+    // Pop off the final step, which would have been on top of the resource.
+    this.currentPathQueue.shift();
+
+    this.state = UnitState.Mining_Walking;
+  }
+
   gather() {
     this.miningInfo.timeLeftToMine--;
 
@@ -125,7 +126,9 @@ class Builder extends Unit {
         return;
       }
 
-      this.walkToTile(this.miningInfo.miningDeposit);
+      var miningDepositDestination:MiningDeposit = this.findNearestMiningDeposit();
+      this.walkToTile(miningDepositDestination);
+      this.currentPathQueue.shift();
 
       this.state = UnitState.Mining_Returning;
     }
@@ -137,6 +140,9 @@ class Builder extends Unit {
         break;
       case UnitState.Mining_Gathering:
         this.gather();
+        break;
+      case UnitState.Mining_Depositing:
+        this.deposit();
         break;
       case UnitState.Walking:
       case UnitState.Mining_Returning:

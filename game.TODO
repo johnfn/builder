@@ -25,6 +25,9 @@ Units:
    ☐ And return them at special buildings, but dont do that until I have builders.
    ☐ You shouldn't b able to walk through buildings...
    ☐ How come I can't reassign their destinations?
+   ☐ walkToTile and walkOnTile
+   ☐ lil +5 floating up when you harvest a resource (deposit())
+   ☐ destroy trees (trees should have limited count of resources)
 
 Buildings:
   ✔ Mining dropoff area (this is the main thing holding back mining right now...) @done (14-11-15 19:57)
@@ -46,6 +49,7 @@ Thoughts:
   ☐ Constantly going back and forth between x rel and abs is irritating. Should be rel by default. no one cares about abs except drawing methods
   ☐ When units can't find any mining deposit - give better information, maybe some sort of flash warning or sth
   ☐ Investigate why I cant do bleh<T>(param: typeof T):T[]
+  ☐ upgrades hehe
 
 UI:
  ☐ Need some sort of 'which building to build' UI.
