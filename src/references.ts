@@ -4,14 +4,14 @@
 /// <reference path="../d/jquery.d.ts" />
 
 /// <reference path="g.ts" />
+/// <reference path="grid.ts" />
 /// <reference path="floatingtext.ts" />
 /// <reference path="point.ts" />
 /// <reference path="unitlayer.ts" />
+/// <reference path="tile.ts" />
 /// <reference path="buildings.ts" />
 /// <reference path="interactable.ts" />
-/// <reference path="grid.ts" />
 /// <reference path="resources.ts" />
-/// <reference path="tile.ts" />
 /// <reference path="unit.ts" />
 /// <reference path="builder.ts" />
 /// <reference path="gamemap.ts" />

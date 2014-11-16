@@ -187,6 +187,13 @@ class BottomBarView extends Backbone.View<BottomBarModel> {
 }
 
 class ResourceBarModel extends Backbone.Model {
+  initialize() {
+    this.set('ore', 0);
+    this.set('trees', 0);
+    this.set('marsh', 0);
+    this.set('fish', 0);
+  }
+
   set ore(ore:number) { this.set('ore', ore); }
   get ore():number { return this.get('ore'); }
 
