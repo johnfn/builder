@@ -4,6 +4,7 @@
 /// <reference path="../d/jquery.d.ts" />
 
 /// <reference path="g.ts" />
+/// <reference path="floatingtext.ts" />
 /// <reference path="point.ts" />
 /// <reference path="unitlayer.ts" />
 /// <reference path="buildings.ts" />

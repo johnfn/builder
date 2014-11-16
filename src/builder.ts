@@ -6,7 +6,7 @@ class MiningInfo {
   resourcesCarried:number;
   timeLeftToMine:number;
 
-  MAX_MINING_TIME:number = 10;
+  MAX_MINING_TIME:number = 100;
 }
 
 class Builder extends Unit {
@@ -113,6 +113,10 @@ class Builder extends Unit {
     this.currentPathQueue.shift();
 
     this.state = UnitState.Mining_Walking;
+
+    var tt:FloatingText = new FloatingText(this.sprite.x, this.sprite.y);
+
+    G.game.add.existing(tt);
   }
 
   gather() {

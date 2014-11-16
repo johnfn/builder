@@ -22,7 +22,7 @@ Units:
    ✔ make it so that only clicking on tc builds unit @done (14-11-13 23:48)
    ✔ add new building @done (14-11-15 19:04)
    ✔ Then they can harvest resources..whoa @done (14-11-15 20:03)
-   ☐ And return them at special buildings, but dont do that until I have builders.
+   ✔ And return them at special buildings, but dont do that until I have builders. @done (14-11-15 21:52)
    ☐ You shouldn't b able to walk through buildings...
    ☐ How come I can't reassign their destinations?
    ☐ walkToTile and walkOnTile
