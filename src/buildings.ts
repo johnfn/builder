@@ -39,10 +39,7 @@ class Buildings extends Grid {
     super();
   }
 
-  public build = (xy:number[], tileType:typeof Building) => {
-    var x:number = xy[0];
-    var y:number = xy[1];
-
+  public build = (x:number, y:number, tileType:typeof Building) => {
     this.data[x][y] = new tileType();
     this.data[x][y].sprite = G.game.add.sprite(x * G.TILE_SIZE, y * G.TILE_SIZE, "buildings", 0);
   }

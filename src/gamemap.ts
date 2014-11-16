@@ -116,7 +116,7 @@ class GameMap extends Phaser.Group implements Gettable<Tile[]> {
     var y = this.selectedTile.sprite.y / G.TILE_SIZE;
 
     if (this.selectedTile.getTileName() == "grass") {
-      this.buildings.build([x, y], TownCenter);
+      this.buildings.build(x, y, TownCenter);
     }
   }
 

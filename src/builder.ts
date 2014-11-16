@@ -28,7 +28,7 @@ class Builder extends Unit {
     } else {
       var loc:Tile = G.map.getMousedOverTile();
 
-      G.map.buildings.build([loc.sprite.x / G.TILE_SIZE, loc.sprite.y / G.TILE_SIZE], this.buildingBeingBuilt);
+      G.map.buildings.build(loc.sprite.x / G.TILE_SIZE, loc.sprite.y / G.TILE_SIZE, this.buildingBeingBuilt);
     }
   }
 

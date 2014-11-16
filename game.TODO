@@ -26,10 +26,10 @@ Units:
 
 Buildings:
   ☐ Mining dropoff area (this is the main thing holding back mining right now...)
-    ☐ Builders query the loc of the m-o- tile.
-    ☐ Then, query Buildings grid and tell it to add a new building
-    ☐ It needs to be passed in a building type.
-    ☐ also xy[] is bad, should be a Point or something.
+    ✔ Builders query the loc of the m-o- tile. @done (14-11-15 19:01)
+    ✔ Then, query Buildings grid and tell it to add a new building @done (14-11-15 19:02)
+    ✔ It needs to be passed in a building type. @done (14-11-15 19:02)
+    ✔ also xy[] is bad, should be a Point or something. @done (14-11-15 19:04)
     ☐ Maybe Tile should have #point
     ☐ Constantly going back and forth between x rel and abs is irritating. Should be rel by default. no one cares about abs except drawing methods
   ☐ Town Center
