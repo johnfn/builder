@@ -20,6 +20,14 @@
       </button>
     </script>
 
+    <script id="resource-bar-template" type="text/template">
+      ore: <%= ore %>
+      trees: <%= trees %>
+      marsh: <%= marsh %>
+      fish: <%= fish %>
+    </script>
+
+
     <script id="bottom-bar-template" type="text/template">
       <div class="bottom-bar">
         <div class="title"> <%= heading %> </div>
@@ -29,9 +37,14 @@
     </script>
   </head>
   <body>
+    <div id="resource-bar">
+
+    </div>
+
     <div id="main">
 
     </div>
+
     <div id="bottom-bar">
 
     </div>

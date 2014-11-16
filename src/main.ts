@@ -31,20 +31,6 @@ class Minimap {
 }
 */
 
-class ResourceBarModel extends Backbone.Model {
-  set ore(ore:number) { this.set('ore', ore); }
-  get ore():number { return this.get('ore'); }
-
-  set trees(trees:number) { this.set('trees', trees); }
-  get trees():number { return this.get('trees'); }
-
-  set marsh(marsh:number) { this.set('marsh', marsh); }
-  get marsh():number { return this.get('marsh'); }
-
-  set fish(fish:number) { this.set('fish', fish); }
-  get fish():number { return this.get('fish'); }
-}
-
 class MainState extends Phaser.State {
   groups: {[key: string]: Phaser.Group} = {};
   cursors: Phaser.CursorKeys;
@@ -61,6 +47,11 @@ class MainState extends Phaser.State {
 
   public init():void {
     G.resourceBarModel = new ResourceBarModel();
+
+    var view = new ResourceBarView({
+      el: $("#bottom-bar"),
+      model: G.resourceBarModel
+    });
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.game.world.setBounds(0, 0, G.MAP_SIZE * 32, G.MAP_SIZE * 32);
@@ -190,6 +181,36 @@ class BottomBarView extends Backbone.View<BottomBarModel> {
 
       button.render();
     }
+
+    return this;
+  }
+}
+
+class ResourceBarModel extends Backbone.Model {
+  set ore(ore:number) { this.set('ore', ore); }
+  get ore():number { return this.get('ore'); }
+
+  set trees(trees:number) { this.set('trees', trees); }
+  get trees():number { return this.get('trees'); }
+
+  set marsh(marsh:number) { this.set('marsh', marsh); }
+  get marsh():number { return this.get('marsh'); }
+
+  set fish(fish:number) { this.set('fish', fish); }
+  get fish():number { return this.get('fish'); }
+}
+
+class ResourceBarView extends Backbone.View<ResourceBarModel> {
+  template:(...data:any[]) => string;
+
+  initialize() {
+    this.template = _.template($("#resource-bar-template").html());
+
+    this.render();
+  }
+
+  render() {
+    this.$el.html(this.template(this.model.toJSON()));
 
     return this;
   }
