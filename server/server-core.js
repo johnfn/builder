@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 var coreServer = require('./server.js');
 var util = require('util');
 var http = require('http').Server(app);
@@ -8,6 +9,8 @@ var app = express();
 
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'jade');
+
+app.use(express.static(path.join(__dirname, '..')));
 
 /*
 app.set("view options", {layout: false});
@@ -21,11 +24,11 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
-var server = app.listen(3000, function () {
+var server = app.listen(8000, function () {
   var host = server.address().address
   var port = server.address().port
 
-  console.log('Example app listening at http://%s:%s', host, port)
+  console.log('Running game at http://%s:%s', host, port)
 });
 
 io.on('connection', function(socket){

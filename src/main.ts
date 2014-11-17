@@ -1,5 +1,7 @@
 /// <reference path="references.ts" />
 
+declare var io;
+
 /*
 class Minimap {
   // too slow
@@ -96,7 +98,7 @@ class Game {
   state: Phaser.State;
 
   constructor() {
-    var socket:SocketIO = io();
+    var socket = io();
 
     this.state = new MainState();
     G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, document.getElementById("main"), this.state);
