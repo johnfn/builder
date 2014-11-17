@@ -96,6 +96,8 @@ class Game {
   state: Phaser.State;
 
   constructor() {
+    var socket:SocketIO = io();
+
     this.state = new MainState();
     G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, document.getElementById("main"), this.state);
 

@@ -3,6 +3,14 @@ Notes to self -
   - build units by clicking on a town center and pressing z
   - build mining deposits by clicking on a unit, pressing z (to select the deposit) and pressing z (to select where to build it)
 
+Mutliplaya:
+ ☐ socket.io.d.ts
+ ☐ incl socket.io.js
+ ☐ Start moving stuff outside of main.ts
+
+Random learning:
+ ☐ What does this mean? interface Blehstuff { (a: number): herp }
+
 Units:
  ☐ Builder/Gatherer.
      ☐ But units ignore other units, except they dont end on top of them.
