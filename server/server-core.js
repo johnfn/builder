@@ -2,10 +2,10 @@ var express = require('express');
 var path = require('path');
 var coreServer = require('./server.js');
 var util = require('util');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var app = express();
 
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'jade');
@@ -24,7 +24,7 @@ app.get('/', function (req, res) {
   res.render('index');
 });
 
-var server = app.listen(8000, function () {
+var server = http.listen(8000, function () {
   var host = server.address().address
   var port = server.address().port
 
