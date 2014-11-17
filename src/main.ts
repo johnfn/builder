@@ -1,7 +1,5 @@
 /// <reference path="references.ts" />
 
-declare var io;
-
 /*
 class Minimap {
   // too slow
@@ -98,8 +96,6 @@ class Game {
   state: Phaser.State;
 
   constructor() {
-    var socket = io();
-
     this.state = new MainState();
     G.game = new Phaser.Game(G.SCREEN_WIDTH, G.SCREEN_HEIGHT, Phaser.WEBGL, document.getElementById("main"), this.state);
 
@@ -265,4 +261,6 @@ class ActionButton extends Backbone.View<ActionModel> {
 
 $(function() {
   new Game();
-})
+
+  G.socket.emit('message', { 'a': 'b' });
+});

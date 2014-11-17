@@ -1,5 +1,7 @@
 /// <reference path="references.ts" />
 
+declare var io;
+
 class G {
   static SCREEN_WIDTH:number = 800;
   static SCREEN_HEIGHT:number = 800;
@@ -9,6 +11,7 @@ class G {
 
   static delta4:Point[] = [{x: 0, y: 1}, {x: 0, y: -1}, {x: 1, y: 0}, {x: -1, y: 0}];
 
+  static socket = io();
   static map:GameMap;
   static game:Phaser.Game;
   static bottomBar:BottomBar;
