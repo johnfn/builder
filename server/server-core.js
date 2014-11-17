@@ -6,21 +6,12 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-
 app.set('views', __dirname + '/../views');
 app.set('view engine', 'jade');
 
 app.use(express.static(path.join(__dirname, '..')));
 
-/*
-app.set("view options", {layout: false});
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'ejs');
-*/
-
 app.get('/', function (req, res) {
-  // console.log(JSON.stringify(coreServer, null, 2));
-
   res.render('index');
 });
 
@@ -31,6 +22,12 @@ var server = http.listen(8000, function () {
   console.log('Running game at http://%s:%s', host, port)
 });
 
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
   console.log('a user connected');
+
+  socket.on('message', function(msg) {
+    console.log("message received:", msg);
+  });
+
+  coreServer.newConnection(socket);
 });
