@@ -2,3 +2,5 @@ bower_components/
 *.js
 .DS_Store
 node_modules/
+*.sublime-workspace
+*.sublime-project
