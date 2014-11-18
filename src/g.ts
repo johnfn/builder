@@ -18,6 +18,10 @@ class G {
   static resourceBarModel:ResourceBarModel;
 }
 
+G.socket.on('map-generation', function(a) {
+  console.log("whoa: ", a);
+})
+
 interface Gettable<T> {
   get:(x:number, y:number) => T;
 }

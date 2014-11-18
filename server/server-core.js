@@ -25,6 +25,10 @@ var server = http.listen(8000, function () {
 io.on('connection', function(socket) {
   console.log('a user connected');
 
+  io.emit('map-generation', {
+    for: 'everyone'
+  });
+
   socket.on('message', function(msg) {
     console.log("message received:", msg);
   });
